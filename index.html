@@ -26,8 +26,23 @@
     }
 
     /* The blurred animated background behind everything */
-    $1
-      /* We keep the blur, but let’s go for darker gradient colors above. Now it’s faster (8s) and darker. */
+    .bg-anim {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* The gradient colors are set here, along with the animation speed. */
+      /* To use darker or lighter colors, just change these color codes. */
+      background: linear-gradient(-142deg, #1b1b2b, #0d1017, #2b303b, #121417);
+      background-size: 400% 400%;
+
+      /* The line below controls how fast ("8s") the gradient shifts.
+         You can also adjust "ease" for different timing functions,
+         or "infinite" to keep it going forever. */
+      animation: animateBG 50s ease infinite;
+
+      filter: blur(16px);
       z-index: 0; /* behind everything */
     }
 
