@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SERP Sniper - SEO Optimeringsspil</title>
     <link rel="stylesheet" href="styles.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.5/dist/confetti.browser.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,24 +73,70 @@
 
     <script>
         let level = 1;
+        const maxLevel = 3;
+        const cases = {
+            1: {
+                caseText: "Du er en restaurant i København, der vil have en bedre lokal placering på Google.",
+                titleOptions: [
+                    {text: "Bedste restaurant i København", value: 10},
+                    {text: "God mad tæt på dig", value: 5},
+                    {text: "Spis her nu", value: 3}
+                ],
+                metaOptions: [
+                    {text: "Find byens bedste spisesteder med anmeldelser og menuer!", value: 10},
+                    {text: "Gode spisesteder nær dig", value: 5},
+                    {text: "Madtilbud her!", value: 3}
+                ],
+                h1Options: [
+                    {text: "Oplev de bedste restauranter i København", value: 10},
+                    {text: "Vores menu og specialiteter", value: 5},
+                    {text: "Velkommen til vores restaurant", value: 3}
+                ]
+            },
+            2: {
+                caseText: "Du driver en webshop, der sælger bæredygtigt tøj og vil øge salget online.",
+                titleOptions: [
+                    {text: "Bæredygtigt tøj i høj kvalitet", value: 10},
+                    {text: "Shop miljøvenligt tøj", value: 5},
+                    {text: "Køb nu og spar!", value: 3}
+                ],
+                metaOptions: [
+                    {text: "Find moderne og bæredygtigt tøj til enhver lejlighed!", value: 10},
+                    {text: "Økologisk mode - bedre for dig og miljøet", value: 5},
+                    {text: "Klik her for gode tilbud", value: 3}
+                ],
+                h1Options: [
+                    {text: "Opdag vores bæredygtige kollektion", value: 10},
+                    {text: "Tøj lavet med omtanke", value: 5},
+                    {text: "Billigt tøj online", value: 3}
+                ]
+            },
+            3: {
+                caseText: "Du ejer en tandlægeklinik i Aarhus og ønsker at tiltrække flere patienter gennem Google-søgninger.",
+                titleOptions: [
+                    {text: "Professionel tandlæge i Aarhus", value: 10},
+                    {text: "Få den bedste tandpleje", value: 5},
+                    {text: "Bestil tid nu!", value: 3}
+                ],
+                metaOptions: [
+                    {text: "Vi tilbyder skånsom og professionel tandpleje", value: 10},
+                    {text: "Tandlægeklinik i hjertet af Aarhus", value: 5},
+                    {text: "Billige tandlægepriser", value: 3}
+                ],
+                h1Options: [
+                    {text: "Din lokale tandlæge i Aarhus", value: 10},
+                    {text: "Sunde tænder hele livet", value: 5},
+                    {text: "Velkommen til vores klinik", value: 3}
+                ]
+            }
+        };
+
         function loadLevel() {
             document.getElementById("level").innerText = level;
-            document.getElementById("businessCase").innerText = "Optimer en hjemmeside for at forbedre SEO.";
-            renderOptions("titleOptions", [
-                {text: "Bedste SEO-strategier", value: 10},
-                {text: "Lær om SEO", value: 5},
-                {text: "Klik her", value: 3}
-            ]);
-            renderOptions("metaOptions", [
-                {text: "Lær hvordan du optimerer din hjemmeside.", value: 10},
-                {text: "SEO er vigtigt, find ud af hvorfor.", value: 5},
-                {text: "Vi tilbyder SEO-hjælp.", value: 3}
-            ]);
-            renderOptions("h1Options", [
-                {text: "Sådan får du bedre placeringer på Google", value: 10},
-                {text: "SEO og dig", value: 5},
-                {text: "Velkommen til min hjemmeside", value: 3}
-            ]);
+            document.getElementById("businessCase").innerText = cases[level].caseText;
+            renderOptions("titleOptions", cases[level].titleOptions);
+            renderOptions("metaOptions", cases[level].metaOptions);
+            renderOptions("h1Options", cases[level].h1Options);
         }
 
         function renderOptions(elementId, options) {
@@ -107,48 +153,6 @@
                 };
                 container.appendChild(div);
             });
-        }
-
-        function calculateRank() {
-            let titleScore = getSelectedScore("titleOptions");
-            let metaScore = getSelectedScore("metaOptions");
-            let h1Score = getSelectedScore("h1Options");
-            
-            if (titleScore === 0 || metaScore === 0 || h1Score === 0) {
-                document.getElementById("result").innerText = "Vælg en mulighed i alle kategorier!";
-                return;
-            }
-
-            let totalScore = titleScore + metaScore + h1Score;
-            let rank;
-            
-            if (totalScore >= 25) {
-                rank = "#1 - Du dominerer søgeresultaterne! 🎯";
-                triggerConfetti();
-            } else if (totalScore >= 15) {
-                rank = "#5 - Godt gået, men der er plads til forbedring! 📈";
-            } else {
-                rank = "#10 - Du skal optimere bedre! 🔍";
-            }
-            
-            document.getElementById("result").innerText = "Din placering: " + rank;
-        }
-
-        function getSelectedScore(elementId) {
-            let selected = document.querySelector(`#${elementId} .selected`);
-            return selected ? parseInt(selected.dataset.value) : 0;
-        }
-
-        function triggerConfetti() {
-            if (typeof confetti === "function") {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            } else {
-                console.error("Confetti library is not loaded correctly.");
-            }
         }
 
         loadLevel();
