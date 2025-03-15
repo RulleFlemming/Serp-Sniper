@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERP Sniper - SEO Optimeringsspil</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.5/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        .options {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .option {
+            background: #ddd;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 80%;
+        }
+        .option.selected {
+            background: #007bff;
+            color: white;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>SERP Sniper: Optimer for at nå #1</h1>
+        <p id="businessCase"></p>
+        <p>Level: <span id="level">1</span></p>
+        
+        <h2>Meta Titel</h2>
+        <div class="options" id="titleOptions"></div>
+        
+        <h2>Meta Beskrivelse</h2>
+        <div class="options" id="metaOptions"></div>
+        
+        <h2>H1 Overskrift</h2>
+        <div class="options" id="h1Options"></div>
+        
+        <button onclick="calculateRank()">Tjek min placering</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let level = 1;
+        function loadLevel() {
+            document.getElementById("level").innerText = level;
+            document.getElementById("businessCase").innerText = "Optimer en hjemmeside for at forbedre SEO.";
+            renderOptions("titleOptions", [
+                {text: "Bedste SEO-strategier", value: 10},
+                {text: "Lær om SEO", value: 5},
+                {text: "Klik her", value: 3}
+            ]);
+            renderOptions("metaOptions", [
+                {text: "Lær hvordan du optimerer din hjemmeside.", value: 10},
+                {text: "SEO er vigtigt, find ud af hvorfor.", value: 5},
+                {text: "Vi tilbyder SEO-hjælp.", value: 3}
+            ]);
+            renderOptions("h1Options", [
+                {text: "Sådan får du bedre placeringer på Google", value: 10},
+                {text: "SEO og dig", value: 5},
+                {text: "Velkommen til min hjemmeside", value: 3}
+            ]);
+        }
+
+        function renderOptions(elementId, options) {
+            let container = document.getElementById(elementId);
+            container.innerHTML = "";
+            options.forEach(option => {
+                let div = document.createElement("div");
+                div.classList.add("option");
+                div.innerText = option.text;
+                div.dataset.value = option.value;
+                div.onclick = function() {
+                    document.querySelectorAll(`#${elementId} .option`).forEach(opt => opt.classList.remove("selected"));
+                    div.classList.add("selected");
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function calculateRank() {
+            let titleScore = getSelectedScore("titleOptions");
+            let metaScore = getSelectedScore("metaOptions");
+            let h1Score = getSelectedScore("h1Options");
+            
+            if (titleScore === 0 || metaScore === 0 || h1Score === 0) {
+                document.getElementById("result").innerText = "Vælg en mulighed i alle kategorier!";
+                return;
+            }
+
+            let totalScore = titleScore + metaScore + h1Score;
+            let rank;
+            
+            if (totalScore >= 25) {
+                rank = "#1 - Du dominerer søgeresultaterne! 🎯";
+                triggerConfetti();
+            } else if (totalScore >= 15) {
+                rank = "#5 - Godt gået, men der er plads til forbedring! 📈";
+            } else {
+                rank = "#10 - Du skal optimere bedre! 🔍";
+            }
+            
+            document.getElementById("result").innerText = "Din placering: " + rank;
+        }
+
+        function getSelectedScore(elementId) {
+            let selected = document.querySelector(`#${elementId} .selected`);
+            return selected ? parseInt(selected.dataset.value) : 0;
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === "function") {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                console.error("Confetti library is not loaded correctly.");
+            }
+        }
+
+        loadLevel();
+    </script>
+</body>
+</html>
