@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SERP Sniper - SEO Optimeringsspil</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
     <style>
         body {
@@ -17,15 +17,37 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
             margin: auto;
+            position: relative;
+        }
+        .level-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
         }
         .options {
-            margin: 15px 0;
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f9f9f9;
         }
         .option {
             background: #ddd;
@@ -33,19 +55,20 @@
             margin: 5px;
             border-radius: 5px;
             cursor: pointer;
-            width: 80%;
+            width: 100%;
         }
         .option.selected {
             background: #007bff;
-            color: white;
+            color: #fff;
         }
         button {
             background: #007bff;
-            color: white;
+            color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 20px;
         }
         button:hover {
             background: #0056b3;
@@ -54,108 +77,155 @@
 </head>
 <body>
     <div class="game-container">
+        <div class="level-indicator">Level <span id="level">1</span> af 3</div>
         <h1>SERP Sniper: Optimer for at nå #1</h1>
         <p id="businessCase"></p>
-        <p>Level: <span id="level">1</span></p>
-        
-        <h2>Meta Titel</h2>
-        <div class="options" id="titleOptions"></div>
-        
-        <h2>Meta Beskrivelse</h2>
-        <div class="options" id="metaOptions"></div>
-        
-        <h2>H1 Overskrift</h2>
-        <div class="options" id="h1Options"></div>
-        
-        <button onclick="calculateRank()">Tjek min placering</button>
+
+        <div class="options-container">
+            <div class="options" id="titleOptions">
+                <h3 id="caseTitle"></h3>
+                <h2>Meta Titel</h2>
+            </div>
+            <div class="options" id="metaOptions">
+                <h2>Meta Beskrivelse</h2>
+            </div>
+            <div class="options" id="h1Options">
+                <h2>H1 Overskrift</h2>
+            </div>
+        </div>
+
+        <button id="checkRankBtn">Tjek min placering</button>
         <p id="result"></p>
     </div>
 
     <script>
-        let level = 1;
-        const maxLevel = 3;
-        const cases = {
+        // --- Independent data objects --- //
+        const businessCases = {
+            1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
+            2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
+            3: "Du har et fitnesscenter i Odense og ønsker at få flere medlemmer."
+        };
+
+        const answerOptions = {
             1: {
-                caseText: "Du er en restaurant i København, der vil have en bedre lokal placering på Google.",
-                titleOptions: [
-                    {text: "Bedste restaurant i København", value: 10},
-                    {text: "God mad tæt på dig", value: 5},
-                    {text: "Spis her nu", value: 3}
-                ],
-                metaOptions: [
-                    {text: "Find byens bedste spisesteder med anmeldelser og menuer!", value: 10},
-                    {text: "Gode spisesteder nær dig", value: 5},
-                    {text: "Madtilbud her!", value: 3}
-                ],
-                h1Options: [
-                    {text: "Oplev de bedste restauranter i København", value: 10},
-                    {text: "Vores menu og specialiteter", value: 5},
-                    {text: "Velkommen til vores restaurant", value: 3}
-                ]
+                title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
+                meta: ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
+                h1: ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
             },
             2: {
-                caseText: "Du driver en webshop, der sælger bæredygtigt tøj og vil øge salget online.",
-                titleOptions: [
-                    {text: "Bæredygtigt tøj i høj kvalitet", value: 10},
-                    {text: "Shop miljøvenligt tøj", value: 5},
-                    {text: "Køb nu og spar!", value: 3}
-                ],
-                metaOptions: [
-                    {text: "Find moderne og bæredygtigt tøj til enhver lejlighed!", value: 10},
-                    {text: "Økologisk mode - bedre for dig og miljøet", value: 5},
-                    {text: "Klik her for gode tilbud", value: 3}
-                ],
-                h1Options: [
-                    {text: "Opdag vores bæredygtige kollektion", value: 10},
-                    {text: "Tøj lavet med omtanke", value: 5},
-                    {text: "Billigt tøj online", value: 3}
-                ]
+                title: ["Bæredygtige sko til enhver lejlighed", "Komfort og stil i ét", "Billige sko på tilbud"],
+                meta: ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
+                h1: ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
             },
             3: {
-                caseText: "Du ejer en tandlægeklinik i Aarhus og ønsker at tiltrække flere patienter gennem Google-søgninger.",
-                titleOptions: [
-                    {text: "Professionel tandlæge i Aarhus", value: 10},
-                    {text: "Få den bedste tandpleje", value: 5},
-                    {text: "Bestil tid nu!", value: 3}
-                ],
-                metaOptions: [
-                    {text: "Vi tilbyder skånsom og professionel tandpleje", value: 10},
-                    {text: "Tandlægeklinik i hjertet af Aarhus", value: 5},
-                    {text: "Billige tandlægepriser", value: 3}
-                ],
-                h1Options: [
-                    {text: "Din lokale tandlæge i Aarhus", value: 10},
-                    {text: "Sunde tænder hele livet", value: 5},
-                    {text: "Velkommen til vores klinik", value: 3}
-                ]
+                title: ["Bliv medlem af Odenses bedste fitnesscenter", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
+                meta: ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
+                h1: ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
             }
         };
 
-        function loadLevel() {
-            document.getElementById("level").innerText = level;
-            document.getElementById("businessCase").innerText = cases[level].caseText;
-            renderOptions("titleOptions", cases[level].titleOptions);
-            renderOptions("metaOptions", cases[level].metaOptions);
-            renderOptions("h1Options", cases[level].h1Options);
-        }
+        // --- Independent helper functions --- //
 
         function renderOptions(elementId, options) {
-            let container = document.getElementById(elementId);
-            container.innerHTML = "";
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            const heading = container.querySelector("h2").outerHTML;
+            container.innerHTML = heading;
+
             options.forEach(option => {
-                let div = document.createElement("div");
+                const div = document.createElement("div");
                 div.classList.add("option");
-                div.innerText = option.text;
-                div.dataset.value = option.value;
+                div.innerText = option;
+                div.dataset.value = Math.floor(Math.random() * 10) + 1;
+
                 div.onclick = function() {
-                    document.querySelectorAll(`#${elementId} .option`).forEach(opt => opt.classList.remove("selected"));
+                    container.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
                     div.classList.add("selected");
                 };
                 container.appendChild(div);
             });
         }
 
-        loadLevel();
+        function getSelectedScore(elementId) {
+            const selected = document.querySelector(`#${elementId} .selected`);
+            return selected ? parseInt(selected.dataset.value) : 0;
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === "function") {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        let level = 1;
+        const maxLevel = 3;
+
+        function loadLevel() {
+            const lvlDisplay = document.getElementById("level");
+            const caseDisplay = document.getElementById("businessCase");
+            if (!lvlDisplay || !caseDisplay) return;
+
+            lvlDisplay.innerText = level;
+            caseDisplay.innerText = businessCases[level];
+
+            if (answerOptions[level]) {
+                renderOptions("titleOptions", answerOptions[level].title);
+                renderOptions("metaOptions", answerOptions[level].meta);
+                renderOptions("h1Options", answerOptions[level].h1);
+            }
+        }
+
+        function calculateRank() {
+            const titleScore = getSelectedScore("titleOptions");
+            const metaScore = getSelectedScore("metaOptions");
+            const h1Score   = getSelectedScore("h1Options");
+            const totalScore = titleScore + metaScore + h1Score;
+
+            let rank;
+            if (totalScore >= 25) {
+                rank = "#1 - Du dominerer søgeresultaterne! 🎯";
+                triggerConfetti();
+                setTimeout(nextLevel, 2000);
+            } else if (totalScore >= 15) {
+                rank = "#5 - Godt gået, men der er plads til forbedring! 📈";
+            } else {
+                rank = "#10 - Du skal optimere bedre! 🔍";
+            }
+
+            const resultEl = document.getElementById("result");
+            if (resultEl) {
+                resultEl.innerText = "Din placering: " + rank;
+            }
+        }
+
+        function nextLevel() {
+            if (level < maxLevel) {
+                level++;
+                const resultEl = document.getElementById("result");
+                if (resultEl) {
+                    resultEl.innerText = "";
+                }
+                loadLevel();
+            } else {
+                const resultEl = document.getElementById("result");
+                if (resultEl) {
+                    resultEl.innerText = "🎉 Du har gennemført alle levels! 🎉";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadLevel();
+            const checkRankBtn = document.getElementById("checkRankBtn");
+            if (checkRankBtn) {
+                checkRankBtn.addEventListener("click", calculateRank);
+            }
+        });
     </script>
 </body>
 </html>
