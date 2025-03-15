@@ -1,258 +1,263 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SERP Sniper - SEO Optimeringsspil</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-        .game-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-            position: relative;
-        }
-        .level-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #007bff;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .options-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .options {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
-        .option {
-            background: #ddd;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .correctOption {
-            background: #28a745 !important; /* green */
-            color: #fff !important;
-            font-weight: bold;
-        }
-        .option.selected {
-            background: #007bff;
-            color: #fff;
-        }
-        button {
-            background: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SERP Sniper - SEO Optimeringsspil</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+    }
+    .game-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 800px; /* a bit wider to fit the grid */
+      margin: auto;
+      position: relative;
+    }
+    .level-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #007bff;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    /* The entire grid (4 rows x 3 columns) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto auto auto; /* 1 row for headings, 3 for answer options */
+      gap: 10px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    /* heading cells (row1) */
+    .grid-heading {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-weight: bold;
+      padding: 10px;
+    }
+    /* answer cells (row2-4) */
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin: 5px;
+    }
+    .correctOption {
+      background: #28a745 !important;
+      color: #fff !important;
+      font-weight: bold;
+    }
+    .selected {
+      background: #007bff !important;
+      color: #fff !important;
+    }
+
+    #checkRankBtn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #checkRankBtn:hover {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="level-indicator">Level <span id="level">1</span> af 3</div>
-        <h1>SERP Sniper: Optimer for at nå #1</h1>
-        <p id="businessCase"></p>
+  <div class="game-container">
+    <div class="level-indicator">Level <span id="level">1</span> af 3</div>
+    <h1>SERP Sniper: Optimer for at nå #1</h1>
+    <p id="businessCase"></p>
 
-        <div class="options-container">
-            <div class="options" id="titleOptions">
-                <h3 id="caseTitle"></h3>
-                <h2>Meta Titel</h2>
-            </div>
-            <div class="options" id="metaOptions">
-                <h2>Meta Beskrivelse</h2>
-            </div>
-            <div class="options" id="h1Options">
-                <h2>H1 Overskrift</h2>
-            </div>
-        </div>
-
-        <button id="checkRankBtn">Tjek min placering</button>
-        <p id="result"></p>
+    <!-- The 4x3 grid -->
+    <div class="options-grid" id="optionsGrid">
+      <!-- row1: headings -->
+      <div class="grid-heading">Meta Titel</div>
+      <div class="grid-heading">Meta Beskrivelse</div>
+      <div class="grid-heading">H1 Overskrift</div>
+      <!-- rows 2,3,4: dynamically created by JS -->
     </div>
 
-    <script>
-        // data objects
-        const businessCases = {
-            1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
-            2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
-            3: "Du har et fitnesscenter i Odense og ønsker at få flere medlemmer."
-        };
+    <button id="checkRankBtn">Tjek min placering</button>
+    <p id="result"></p>
+  </div>
 
-        const answerOptions = {
-            1: {
-                title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
-                meta: ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
-                h1: ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
-            },
-            2: {
-                title: ["Bæredygtige sko til enhver lejlighed", "Komfort og stil i ét", "Billige sko på tilbud"],
-                meta: ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
-                h1: ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
-            },
-            3: {
-                title: ["Bliv medlem af Odenses bedste fitnesscenter", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
-                meta: ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
-                h1: ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
-            }
-        };
+  <script>
+    const businessCases = {
+      1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
+      2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
+      3: "Du har et fitnesscenter i Odense og ønsker at få flere medlemmer."
+    };
 
-        // define correct answers for each level (0-based index)
-        // if user picks that index in each category => pass level
-        const correctAnswers = {
-            1: { title: 0, meta: 0, h1: 0 },
-            2: { title: 0, meta: 0, h1: 0 },
-            3: { title: 0, meta: 0, h1: 0 }
-        };
+    const answerOptions = {
+      1: {
+        title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
+        meta:  ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
+        h1:    ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
+      },
+      2: {
+        title: ["Bæredygtige sko til enhver lejlighed", "Komfort og stil i ét", "Billige sko på tilbud"],
+        meta:  ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
+        h1:    ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
+      },
+      3: {
+        title: ["Bliv medlem af Odenses bedste fitnesscenter", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
+        meta:  ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
+        h1:    ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
+      }
+    };
 
-        let level = 1;
-        const maxLevel = 3;
+    // 0-based index for correct answers
+    const correctAnswers = {
+      1: { title: 0, meta: 0, h1: 0 },
+      2: { title: 0, meta: 0, h1: 0 },
+      3: { title: 0, meta: 0, h1: 0 }
+    };
 
-        function renderOptions(elementId, options) {
-            const container = document.getElementById(elementId);
-            if (!container) return;
+    let level = 1;
+    const maxLevel = 3;
 
-            const heading = container.querySelector("h2").outerHTML;
-            container.innerHTML = heading;
+    // builds 3 new rows, each with 3 columns, below the heading row
+    function loadLevel() {
+      document.getElementById("level").innerText = level;
+      document.getElementById("businessCase").innerText = businessCases[level];
 
-            // figure out which category we are dealing with
-            const category = (elementId === "titleOptions") ? "title" : (elementId === "metaOptions") ? "meta" : "h1";
-            // get the correct index for the current level
-            const correctIndex = correctAnswers[level][category];
+      const grid = document.getElementById("optionsGrid");
+      if (!grid) return;
 
-            options.forEach((option, index) => {
-                const div = document.createElement("div");
-                div.classList.add("option");
-                div.innerText = option;
+      // remove old rows (beyond the first 3 headings)
+      while (grid.children.length > 3) {
+        grid.removeChild(grid.lastChild);
+      }
+      while (grid.children.length > 3) {
+        grid.removeChild(grid.lastChild);
+      }
 
-                // if this is the correct answer => highlight green
-                if (index === correctIndex) {
-                    div.classList.add("correctOption");
-                }
+      // We want 3 new rows => each row has 3 categories: (title, meta, h1)
+      for (let i = 0; i < 3; i++) {
+        // create col1 => title's i-th option
+        const titleCell = createOptionCell("title", i);
+        const metaCell  = createOptionCell("meta", i);
+        const h1Cell    = createOptionCell("h1", i);
 
-                // store the index in data-index for easy retrieval
-                div.dataset.index = index;
+        // add them in the grid, col after col
+        grid.appendChild(titleCell);
+        grid.appendChild(metaCell);
+        grid.appendChild(h1Cell);
+      }
+    }
 
-                // handle selection
-                div.onclick = function() {
-                    container.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
-                    div.classList.add("selected");
-                };
+    // creates the .option cell for the given category and index
+    function createOptionCell(category, index) {
+      const cell = document.createElement("div");
+      cell.classList.add("option");
 
-                container.appendChild(div);
-            });
-        }
+      const text = answerOptions[level][category][index];
+      cell.innerText = text;
 
-        function loadLevel() {
-            const lvlDisplay = document.getElementById("level");
-            const caseDisplay = document.getElementById("businessCase");
-            if (!lvlDisplay || !caseDisplay) return;
+      // highlight green if correct
+      if (correctAnswers[level][category] === index) {
+        cell.classList.add("correctOption");
+      }
 
-            lvlDisplay.innerText = level;
-            caseDisplay.innerText = businessCases[level];
+      cell.dataset.category = category;
+      cell.dataset.index = index;
 
-            if (answerOptions[level]) {
-                renderOptions("titleOptions", answerOptions[level].title);
-                renderOptions("metaOptions", answerOptions[level].meta);
-                renderOptions("h1Options", answerOptions[level].h1);
-            }
-        }
+      // on click => select
+      cell.addEventListener("click", () => {
+        removeSelected(category);
+        cell.classList.add("selected");
+      });
 
-        function calculateRank() {
-            // check if user selected the correct index in each category
-            const titleSelected  = document.querySelector('#titleOptions .selected');
-            const metaSelected   = document.querySelector('#metaOptions .selected');
-            const h1Selected     = document.querySelector('#h1Options .selected');
+      return cell;
+    }
 
-            if(!titleSelected || !metaSelected || !h1Selected) {
-                document.getElementById('result').innerText = 'Vælg en mulighed i alle kategorier!';
-                return;
-            }
+    function removeSelected(category) {
+      const all = document.querySelectorAll(`.option[data-category='${category}']`);
+      all.forEach(opt => opt.classList.remove("selected"));
+    }
 
-            const titleIndex = parseInt(titleSelected.dataset.index);
-            const metaIndex  = parseInt(metaSelected.dataset.index);
-            const h1Index    = parseInt(h1Selected.dataset.index);
+    function calculateRank() {
+      const titleSel = document.querySelector(".option[data-category='title'].selected");
+      const metaSel  = document.querySelector(".option[data-category='meta'].selected");
+      const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
 
-            const isCorrect = (
-                titleIndex === correctAnswers[level].title &&
-                metaIndex  === correctAnswers[level].meta  &&
-                h1Index    === correctAnswers[level].h1
-            );
+      if (!titleSel || !metaSel || !h1Sel) {
+        document.getElementById("result").innerText = "Vælg en mulighed i alle kategorier!";
+        return;
+      }
 
-            if(isCorrect) {
-                document.getElementById('result').innerText = '#1 - Du dominerer søgeresultaterne! 🎯';
-                triggerConfetti();
-                setTimeout(nextLevel, 2000);
-            } else {
-                document.getElementById('result').innerText = '#10 - Du skal optimere bedre! 🔍';
-            }
-        }
+      const titleIndex = parseInt(titleSel.dataset.index);
+      const metaIndex  = parseInt(metaSel.dataset.index);
+      const h1Index    = parseInt(h1Sel.dataset.index);
 
-        function nextLevel() {
-            if (level < maxLevel) {
-                level++;
-                const resultEl = document.getElementById('result');
-                if (resultEl) {
-                    resultEl.innerText = '';
-                }
-                loadLevel();
-            } else {
-                const resultEl = document.getElementById('result');
-                if (resultEl) {
-                    resultEl.innerText = '🎉 Du har gennemført alle levels! 🎉';
-                }
-            }
-        }
+      const isCorrect = (
+        titleIndex === correctAnswers[level].title &&
+        metaIndex  === correctAnswers[level].meta  &&
+        h1Index    === correctAnswers[level].h1
+      );
 
-        function triggerConfetti() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            }
-        }
+      if (isCorrect) {
+        document.getElementById("result").innerText = "#1 - Du dominerer søgeresultaterne! 🎯";
+        triggerConfetti();
+        setTimeout(nextLevel, 2000);
+      } else {
+        document.getElementById("result").innerText = "#10 - Du skal optimere bedre! 🔍";
+      }
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadLevel();
-            const checkRankBtn = document.getElementById('checkRankBtn');
-            if (checkRankBtn) {
-                checkRankBtn.addEventListener('click', calculateRank);
-            }
+    function nextLevel() {
+      if (level < maxLevel) {
+        level++;
+        document.getElementById("result").innerText = "";
+        loadLevel();
+      } else {
+        document.getElementById("result").innerText = "🎉 Du har gennemført alle levels! 🎉";
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === "function") {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
         });
-    </script>
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadLevel();
+      document.getElementById("checkRankBtn").addEventListener("click", calculateRank);
+    });
+  </script>
 </body>
 </html>
