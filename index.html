@@ -6,33 +6,41 @@
   <title>SERP Sniper - SEO Optimeringsspil</title>
   <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+    /* Center .game-container by making body a flex container */
     body {
-      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background-color: #f4f4f4;
       text-align: center;
-      padding: 20px;
       overflow-x: hidden;
+      font-family: Arial, sans-serif;
     }
-    /* Basic container styling */
+
     .game-container {
+      position: relative;
       background: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       max-width: 800px;
-      margin: auto;
-      position: relative;
       overflow: hidden; /* For potential animations/overlays */
     }
 
-    /* Start-screen overlay */
+    /* Start-screen overlay fully covering .game-container */
     .start-screen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: #000; /* fully opaque black */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -59,19 +67,16 @@
       background: #0056b3;
     }
 
-    /* fadein animation */
     @keyframes fadeIn {
       0% { opacity: 0; }
       100% { opacity: 1; }
     }
-    /* pulse animation for start button */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
-    /* progress bar container */
     .progress-bar {
       width: 100%;
       height: 24px;
@@ -81,7 +86,6 @@
       margin-bottom: 15px;
       position: relative;
     }
-    /* progress bar fill */
     .progress-fill {
       background: #007bff;
       height: 100%;
@@ -99,15 +103,20 @@
       animation: fadeInDown 0.5s ease;
     }
     @keyframes fadeInDown {
-      0% { transform: translateY(-20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
-    /* The grid (4 rows x 3 columns) */
     .options-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto auto auto; /* headings row + 3 answer rows */
+      grid-template-rows: auto auto auto auto;
       gap: 10px;
       margin-top: 20px;
       text-align: center;
@@ -153,17 +162,28 @@
       color: #fff !important;
     }
 
-    /* shake animation for wrong selection or total */
     .shake {
       animation: shake 0.5s;
     }
     @keyframes shake {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-5px); }
-      40% { transform: translateX(5px); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
-      100% { transform: translateX(0); }
+      0% {
+        transform: translateX(0);
+      }
+      20% {
+        transform: translateX(-5px);
+      }
+      40% {
+        transform: translateX(5px);
+      }
+      60% {
+        transform: translateX(-5px);
+      }
+      80% {
+        transform: translateX(5px);
+      }
+      100% {
+        transform: translateX(0);
+      }
     }
 
     #checkRankBtn {
@@ -177,8 +197,14 @@
       animation: fadeInUp 0.5s ease;
     }
     @keyframes fadeInUp {
-      0% { transform: translateY(20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+      0% {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     #checkRankBtn:hover {
@@ -189,7 +215,6 @@
       min-height: 30px;
     }
 
-    /* overlay for Level Complete */
     .overlay {
       position: absolute;
       top: 0;
@@ -212,8 +237,14 @@
       animation: popIn 0.5s ease;
     }
     @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .overlay-content h2 {
@@ -236,7 +267,6 @@
 </head>
 <body>
   <div class="game-container">
-
     <!-- START SCREEN overlay -->
     <div class="start-screen" id="startScreen">
       <h2>Velkommen til SERP Sniper!</h2>
@@ -392,20 +422,16 @@
 
       if(isCorrect){
         streak++;
-        // if they get 2-3 in a row => bonus msg
-        if(streak >=2){
+        if(streak >= 2){
           showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
         } else {
           showMessage('Godt klaret! Du valgte de mest optimale svar.', false);
         }
-        // show level complete overlay
         setTimeout(()=>{
           triggerConfetti();
           showLevelComplete();
         }, 500);
-
       } else {
-        // forkert => ryst
         streak = 0;
         document.querySelector('.game-container').classList.add('shake');
         setTimeout(()=>{
@@ -427,9 +453,24 @@
     }
 
     function showLevelComplete(){
+      // pick random fun fact
+      const seoFunFacts = [
+        "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
+        "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
+        "Strukturerede data kan hjælpe søgemaskiner med at forstå dit indhold bedre.",
+        "Unikke meta titler og beskrivelser kan forbedre klikraten i SERP'en.",
+        "Mobilvenlighed er et must – Google bruger mobile-first indeksering nu.",
+        "Brugeroplevelse (UX) er lig med SEO – jo bedre UX, jo bedre placering typisk.",
+        "Kvalitetsindhold er kongen. Gode tekster vinder næsten altid over SEO-tricks.",
+        "Backlinks fra troværdige sider er fortsat en vigtig SEO-faktor.",
+        "Optimer dine billeder med beskrivende ALT-tekster for bedre billedsøgning.",
+        "HTTPS og et sikkerhedscertifikat øger troværdigheden og rangering."
+      ];
+      const randomIndex = Math.floor(Math.random() * seoFunFacts.length);
+      const funFact = seoFunFacts[randomIndex];
+      document.getElementById('overlayMsg').textContent = 'Godt klaret! ' + funFact;
       document.getElementById('levelCompleteOverlay').style.display = 'flex';
     }
-
     function hideLevelComplete(){
       document.getElementById('levelCompleteOverlay').style.display = 'none';
     }
