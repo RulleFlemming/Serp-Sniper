@@ -1,96 +1,98 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SERP Sniper - SEO Optimeringsspil</title>
   <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
   <style>
+    /* fill entire window, center content, animate BG */
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       width: 100%;
+      height: 100%;
     }
-    /* Center .game-container by making body a flex container */
     body {
       display: flex;
-      justify-content: center;
       align-items: center;
-      background-color: #f4f4f4;
-      text-align: center;
-      overflow-x: hidden;
+      justify-content: center;
+      background: linear-gradient(-45deg, #accbee, #e7f0fd, #c3cfe2, #ffffff);
+      background-size: 400% 400%;
+      animation: animateBG 15s ease infinite;
       font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+    @keyframes animateBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
+    /* the main container in the center */
     .game-container {
       position: relative;
-      background: white;
+      background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       max-width: 800px;
-      overflow: hidden; /* For potential animations/overlays */
+      width: 90%;
+      z-index: 10;
+      overflow: hidden; /* overlay or animations inside can be hidden */
     }
 
-    /* Start-screen overlay fully covering .game-container */
+    /* the original start-screen overlay inside .game-container, not covering entire window */
     .start-screen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000; /* fully opaque black */
+      background: #000; /* fully black, no fade */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #fff;
       z-index: 999;
-      animation: fadeIn 1s ease;
     }
     .start-screen h2 {
       margin-bottom: 1rem;
       font-size: 2rem;
     }
     .start-screen button {
-      background: #007bff;
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       color: #fff;
       border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
+      padding: 14px 28px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
-      animation: pulse 1s infinite;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
     }
     .start-screen button:hover {
-      background: #0056b3;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+      transform: scale(1.05);
     }
 
     .progress-bar {
       width: 100%;
-      height: 24px;
-      background: #eee;
-      border-radius: 12px;
+      height: 26px;
+      background: #e9ecef;
+      border-radius: 13px;
       overflow: hidden;
       margin-bottom: 15px;
       position: relative;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
     }
     .progress-fill {
-      background: #007bff;
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       height: 100%;
       color: #fff;
-      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -99,8 +101,10 @@
     }
 
     h1 {
-      margin-top: 0;
+      margin-top: 10px;
       animation: fadeInDown 0.5s ease;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
     @keyframes fadeInDown {
       0% {
@@ -119,8 +123,8 @@
       grid-template-rows: auto auto auto auto;
       gap: 10px;
       margin-top: 20px;
-      text-align: center;
       animation: fadeIn 0.5s ease;
+      text-align: center;
     }
     @keyframes fadeIn {
       0% { opacity: 0; }
@@ -128,28 +132,31 @@
     }
 
     .grid-heading {
-      background: #f9f9f9;
+      background: #fcfcfc;
       border: 1px solid #ddd;
       border-radius: 5px;
       font-weight: bold;
-      padding: 10px;
+      padding: 12px;
       animation: fadeIn 0.5s ease;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .option {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ddd;
-      padding: 10px;
-      border-radius: 5px;
+      background: #f0f0f0;
+      padding: 12px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 0.95rem;
       margin: 5px;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
     .option:hover {
-      transform: scale(1.03);
+      transform: translateY(-2px);
+      background: #e0e0e0;
     }
 
     .correctOption {
@@ -166,35 +173,25 @@
       animation: shake 0.5s;
     }
     @keyframes shake {
-      0% {
-        transform: translateX(0);
-      }
-      20% {
-        transform: translateX(-5px);
-      }
-      40% {
-        transform: translateX(5px);
-      }
-      60% {
-        transform: translateX(-5px);
-      }
-      80% {
-        transform: translateX(5px);
-      }
-      100% {
-        transform: translateX(0);
-      }
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
     }
 
     #checkRankBtn {
-      background: #007bff;
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 12px 28px;
+      border-radius: 8px;
       cursor: pointer;
       margin-top: 20px;
       animation: fadeInUp 0.5s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     @keyframes fadeInUp {
       0% {
@@ -208,13 +205,17 @@
     }
 
     #checkRankBtn:hover {
-      background: #0056b3;
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #2b4ca3 0%, #0c1038 100%);
     }
+
     #result {
       margin-top: 10px;
       min-height: 30px;
+      font-weight: 600;
     }
 
+    /* level complete overlay inside .game-container */
     .overlay {
       position: absolute;
       top: 0;
@@ -226,8 +227,13 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      animation: fadeIn 0.5s ease;
+      animation: fadeInOverlay 0.5s ease;
     }
+    @keyframes fadeInOverlay {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
     .overlay-content {
       background: #fff;
       padding: 20px;
@@ -235,16 +241,11 @@
       text-align: center;
       width: 300px;
       animation: popIn 0.5s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     @keyframes popIn {
-      0% {
-        transform: scale(0.8);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .overlay-content h2 {
@@ -258,6 +259,8 @@
       border-radius: 5px;
       cursor: pointer;
       margin-top: 20px;
+      font-weight: 600;
+      transition: background 0.2s ease;
     }
     .overlay-content button:hover {
       background: #218838;
@@ -266,8 +269,9 @@
   </style>
 </head>
 <body>
+
   <div class="game-container">
-    <!-- START SCREEN overlay -->
+    <!-- Start screen overlay, inside .game-container, not entire window -->
     <div class="start-screen" id="startScreen">
       <h2>Velkommen til SERP Sniper!</h2>
       <p>Dette spil hjælper dig med at optimere din side. Klik for at starte!</p>
@@ -299,11 +303,10 @@
         <button id="nextLevelBtn">Næste Level</button>
       </div>
     </div>
-
   </div>
 
   <script>
-    let streak = 0; // opgavestreak
+    let streak = 0;
 
     const businessCases = {
       1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
@@ -314,22 +317,21 @@
     const answerOptions = {
       1: {
         title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
-        meta:  ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
-        h1:    ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
+        meta: ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
+        h1:   ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
       },
       2: {
         title: ["Bæredygtige sko til enhver lejlighed", "Komfort og stil i ét", "Billige sko på tilbud"],
-        meta:  ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
-        h1:    ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
+        meta: ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
+        h1:   ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
       },
       3: {
         title: ["Bliv medlem af Odenses bedste fitnesscenter", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
-        meta:  ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
-        h1:    ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
+        meta: ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
+        h1:   ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
       }
     };
 
-    // 0-based index for correct answers
     const correctAnswers = {
       1: { title: 0, meta: 0, h1: 0 },
       2: { title: 0, meta: 0, h1: 0 },
@@ -340,7 +342,6 @@
     const maxLevel = 3;
 
     function initGame(){
-      // show start screen
       document.getElementById('startScreen').style.display = 'flex';
     }
 
@@ -349,20 +350,18 @@
       loadLevel();
     }
 
-    function loadLevel() {
+    function loadLevel(){
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
 
       const grid = document.getElementById('optionsGrid');
-      if (!grid) return;
+      if(!grid) return;
 
-      // remove old rows beyond headings
-      while (grid.children.length > 3) {
+      while(grid.children.length > 3){
         grid.removeChild(grid.lastChild);
       }
 
-      // each category has 3 answers => 3 new rows
-      for (let i = 0; i < 3; i++) {
+      for(let i=0; i<3; i++){
         const titleCell = createOptionCell('title', i);
         const metaCell  = createOptionCell('meta', i);
         const h1Cell    = createOptionCell('h1', i);
@@ -380,24 +379,24 @@
       const text = answerOptions[level][category][index];
       cell.innerText = text;
 
-      if (correctAnswers[level][category] === index){
+      if(correctAnswers[level][category]===index){
         cell.classList.add('correctOption');
       }
 
-      cell.dataset.category = category;
-      cell.dataset.index = index;
+      cell.dataset.category=category;
+      cell.dataset.index=index;
 
-      cell.addEventListener('click', ()=>{
+      cell.onclick=()=>{
         removeSelected(category);
         cell.classList.add('selected');
-      });
+      };
 
       return cell;
     }
 
     function removeSelected(category){
       const all = document.querySelectorAll(`.option[data-category='${category}']`);
-      all.forEach(opt=>opt.classList.remove('selected'));
+      all.forEach(o=>o.classList.remove('selected'));
     }
 
     function calculateRank(){
@@ -405,56 +404,50 @@
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
 
-      if(!titleSel || !metaSel || !h1Sel){
+      if(!titleSel||!metaSel||!h1Sel){
         showMessage('Vælg en mulighed i alle kategorier!', true);
         return;
       }
 
-      const titleIndex = parseInt(titleSel.dataset.index);
-      const metaIndex  = parseInt(metaSel.dataset.index);
-      const h1Index    = parseInt(h1Sel.dataset.index);
+      const titleIndex = +titleSel.dataset.index;
+      const metaIndex  = +metaSel.dataset.index;
+      const h1Index    = +h1Sel.dataset.index;
 
-      const isCorrect = (
-        titleIndex === correctAnswers[level].title &&
-        metaIndex  === correctAnswers[level].meta  &&
-        h1Index    === correctAnswers[level].h1
+      const isCorrect=(
+        titleIndex===correctAnswers[level].title &&
+        metaIndex===correctAnswers[level].meta &&
+        h1Index===correctAnswers[level].h1
       );
 
       if(isCorrect){
         streak++;
-        if(streak >= 2){
+        if(streak>=2){
           showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
-        } else {
+        }else{
           showMessage('Godt klaret! Du valgte de mest optimale svar.', false);
         }
         setTimeout(()=>{
           triggerConfetti();
           showLevelComplete();
-        }, 500);
-      } else {
-        streak = 0;
+        },500);
+      }else{
+        streak=0;
         document.querySelector('.game-container').classList.add('shake');
         setTimeout(()=>{
           document.querySelector('.game-container').classList.remove('shake');
-        }, 500);
-
+        },500);
         showMessage('Ikke helt korrekt – prøv at justere dine valg.', true);
       }
     }
 
     function showMessage(msg, isError){
-      const res = document.getElementById('result');
-      res.innerText = msg;
-      if(isError){
-        res.style.color = 'red';
-      } else {
-        res.style.color = 'green';
-      }
+      const r=document.getElementById('result');
+      r.innerText=msg;
+      r.style.color=isError?'red':'green';
     }
 
     function showLevelComplete(){
-      // pick random fun fact
-      const seoFunFacts = [
+      const facts=[
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
         "Strukturerede data kan hjælpe søgemaskiner med at forstå dit indhold bedre.",
@@ -466,51 +459,51 @@
         "Optimer dine billeder med beskrivende ALT-tekster for bedre billedsøgning.",
         "HTTPS og et sikkerhedscertifikat øger troværdigheden og rangering."
       ];
-      const randomIndex = Math.floor(Math.random() * seoFunFacts.length);
-      const funFact = seoFunFacts[randomIndex];
-      document.getElementById('overlayMsg').textContent = 'Godt klaret! ' + funFact;
-      document.getElementById('levelCompleteOverlay').style.display = 'flex';
+      const i=Math.floor(Math.random()*facts.length);
+      document.getElementById('overlayMsg').textContent='Godt klaret! '+facts[i];
+      document.getElementById('levelCompleteOverlay').style.display='flex';
     }
     function hideLevelComplete(){
-      document.getElementById('levelCompleteOverlay').style.display = 'none';
+      document.getElementById('levelCompleteOverlay').style.display='none';
     }
 
     function nextLevel(){
       hideLevelComplete();
-      if(level < maxLevel){
+      if(level<maxLevel){
         level++;
-        document.getElementById('result').innerText = '';
+        document.getElementById('result').innerText='';
         loadLevel();
-      } else {
-        document.getElementById('result').style.color = 'green';
-        document.getElementById('result').innerText = '🎉 Du har gennemført alle levels! 🎉';
+      }else{
+        document.getElementById('result').style.color='green';
+        document.getElementById('result').innerText='🎉 Du har gennemført alle levels! 🎉';
       }
     }
 
     function triggerConfetti(){
-      if(typeof confetti === 'function'){
+      if(typeof confetti==='function'){
         confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
+          particleCount:100,
+          spread:70,
+          origin:{y:0.6}
         });
       }
     }
 
-    function updateProgressBar(current, total){
-      const fraction = Math.round((current / total)*100);
-      const fill = document.getElementById('progressFill');
-      if(!fill) return;
-      fill.style.width = fraction + '%';
-      fill.innerText = `Level ${current} af ${total}`;
+    function updateProgressBar(cur,t){
+      const fill=document.getElementById('progressFill');
+      if(!fill)return;
+      const f=Math.round((cur/t)*100);
+      fill.style.width=f+'%';
+      fill.innerText=`Level ${cur} af ${t}`;
     }
 
-    document.addEventListener('DOMContentLoaded', ()=>{
+    document.addEventListener('DOMContentLoaded',()=>{
       initGame();
-      document.getElementById('startButton').addEventListener('click', startGame);
-      document.getElementById('checkRankBtn').addEventListener('click', calculateRank);
-      document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
+      document.getElementById('startButton').onclick=startGame;
+      document.getElementById('checkRankBtn').onclick=calculateRank;
+      document.getElementById('nextLevelBtn').onclick=nextLevel;
     });
+
   </script>
 </body>
 </html>
