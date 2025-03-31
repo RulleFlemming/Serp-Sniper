@@ -326,12 +326,22 @@
   <script>
     let streak = 0;
 
+    // --------------------------------------------------------------------
+    // Define business cases for each level.
+    // To add a new level, add a new property with the next level number and its description.
+    // --------------------------------------------------------------------
     const businessCases = {
       1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
       2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
       3: "Du har et fitnesscenter i Odense og ønsker at få flere medlemmer."
+      // Example for new level:
+      // 4: "Du ejer en boghandel i København og vil øge salget af nichebøger."
     };
 
+    // --------------------------------------------------------------------
+    // Define answer options for each level.
+    // Add a new level by including a new object with arrays for 'title', 'meta', and 'h1' options.
+    // --------------------------------------------------------------------
     const answerOptions = {
       1: {
         title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
@@ -348,15 +358,30 @@
         meta:  ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
         h1:   ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
       }
+      // Example for new level:
+      // 4: {
+      //   title: ["Moderne boghandel i København", "Kulturel bogoplevelse", "Nye bøger hver uge"],
+      //   meta:  ["Opdag din næste favoritbog i hjertet af København", "Kultur og litteratur samlet under ét tag", "Besøg os for unikke bogoplevelser"],
+      //   h1:    ["Velkommen til Boghandel København", "Din lokale bogoplevelse", "Oplev litteratur på nye måder"]
+      // }
     };
 
+    // --------------------------------------------------------------------
+    // Define the correct answers for each level.
+    // For each new level, add a new property with the correct answer index for 'title', 'meta', and 'h1'.
+    // --------------------------------------------------------------------
     const correctAnswers = {
       1: { title: 0, meta: 0, h1: 0 },
       2: { title: 0, meta: 0, h1: 0 },
       3: { title: 0, meta: 0, h1: 0 }
+      // Example for new level:
+      // 4: { title: 0, meta: 0, h1: 0 }
     };
 
-    let level = 1;
+    // --------------------------------------------------------------------
+    // Update maxLevel to match the total number of levels.
+    // Change this value when adding new levels (e.g., if adding level 4, change to 4).
+    // --------------------------------------------------------------------
     const maxLevel = 3;
 
     document.addEventListener('DOMContentLoaded', ()=>{
@@ -383,12 +408,12 @@
       const grid = document.getElementById('optionsGrid');
       if(!grid) return;
 
-      // remove old rows beyond headings
-      while(grid.children.length>3){
+      // Remove old rows beyond headings
+      while(grid.children.length > 3){
         grid.removeChild(grid.lastChild);
       }
 
-      for(let i=0;i<3;i++){
+      for(let i = 0; i < 3; i++){
         const titleCell = createOptionCell('title', i);
         const metaCell  = createOptionCell('meta', i);
         const h1Cell    = createOptionCell('h1', i);
@@ -406,14 +431,14 @@
       const text = answerOptions[level][category][index];
       cell.innerText = text;
 
-      if(correctAnswers[level][category]===index){
+      if(correctAnswers[level][category] === index){
         cell.classList.add('correctOption');
       }
 
-      cell.dataset.category=category;
-      cell.dataset.index=index;
+      cell.dataset.category = category;
+      cell.dataset.index = index;
 
-      cell.onclick=()=>{
+      cell.onclick = () => {
         removeSelected(category);
         cell.classList.add('selected');
       };
@@ -422,8 +447,8 @@
     }
 
     function removeSelected(category){
-      const all=document.querySelectorAll(`.option[data-category='${category}']`);
-      all.forEach(o=>o.classList.remove('selected'));
+      const all = document.querySelectorAll(`.option[data-category='${category}']`);
+      all.forEach(o => o.classList.remove('selected'));
     }
 
     function calculateRank(){
@@ -431,24 +456,24 @@
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
 
-      if(!titleSel||!metaSel||!h1Sel){
+      if(!titleSel || !metaSel || !h1Sel){
         showMessage('Vælg en mulighed i alle kategorier!', true);
         return;
       }
 
-      const titleIndex=+titleSel.dataset.index;
-      const metaIndex=+metaSel.dataset.index;
-      const h1Index=+h1Sel.dataset.index;
+      const titleIndex = +titleSel.dataset.index;
+      const metaIndex  = +metaSel.dataset.index;
+      const h1Index    = +h1Sel.dataset.index;
 
-      const isCorrect=(
-        titleIndex===correctAnswers[level].title &&
-        metaIndex===correctAnswers[level].meta &&
-        h1Index===correctAnswers[level].h1
+      const isCorrect = (
+        titleIndex === correctAnswers[level].title &&
+        metaIndex === correctAnswers[level].meta &&
+        h1Index === correctAnswers[level].h1
       );
 
       if(isCorrect){
         streak++;
-        if(streak>=2){
+        if(streak >= 2){
           showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
         } else {
           showMessage('Godt klaret! Du valgte de mest optimale svar.', false);
@@ -456,25 +481,25 @@
         setTimeout(()=>{
           triggerConfetti();
           showLevelComplete();
-        },500);
+        }, 500);
       } else {
-        streak=0;
+        streak = 0;
         document.querySelector('.game-container').classList.add('shake');
         setTimeout(()=>{
           document.querySelector('.game-container').classList.remove('shake');
-        },500);
+        }, 500);
         showMessage('Ikke helt korrekt – prøv at justere dine valg.', true);
       }
     }
 
     function showMessage(msg, isError){
-      const r=document.getElementById('result');
-      r.innerText=msg;
-      r.style.color=isError?'red':'green';
+      const r = document.getElementById('result');
+      r.innerText = msg;
+      r.style.color = isError ? 'red' : 'green';
     }
 
     function showLevelComplete(){
-      const facts=[
+      const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
         "Strukturerede data kan hjælpe søgemaskiner med at forstå dit indhold bedre.",
@@ -486,76 +511,71 @@
         "Optimer dine billeder med beskrivende ALT-tekster for bedre billedsøgning.",
         "HTTPS og et sikkerhedscertifikat øger troværdigheden og rangering."
       ];
-      const i=Math.floor(Math.random()*facts.length);
-      document.getElementById('overlayMsg').textContent='Godt klaret! '+facts[i];
-      document.getElementById('levelCompleteOverlay').style.display='flex';
+      const i = Math.floor(Math.random() * facts.length);
+      document.getElementById('overlayMsg').textContent = 'Godt klaret! ' + facts[i];
+      document.getElementById('levelCompleteOverlay').style.display = 'flex';
     }
     function hideLevelComplete(){
-      document.getElementById('levelCompleteOverlay').style.display='none';
+      document.getElementById('levelCompleteOverlay').style.display = 'none';
     }
 
     function nextLevel(){
       hideLevelComplete();
-      if(level<maxLevel){
+      if(level < maxLevel){
         level++;
-        document.getElementById('result').innerText='';
+        document.getElementById('result').innerText = '';
         loadLevel();
       } else {
-        document.getElementById('result').style.color='green';
-        document.getElementById('result').innerText='🎉 Du har gennemført alle levels! 🎉';
+        document.getElementById('result').style.color = 'green';
+        document.getElementById('result').innerText = '🎉 Du har gennemført alle levels! 🎉';
       }
     }
 
     function triggerConfetti(){
-      if(typeof confetti==='function'){
+      if(typeof confetti === 'function'){
         confetti({
-          particleCount:100,
-          spread:70,
-          origin:{y:0.6}
+          particleCount: 100,
+          spread: 70,
+          origin: {y: 0.6}
         });
       }
     }
 
-    function updateProgressBar(cur,t){
-      const fill=document.getElementById('progressFill');
+    function updateProgressBar(cur, t){
+      const fill = document.getElementById('progressFill');
       if(!fill)return;
-      const f=Math.round((cur/t)*100);
-      fill.style.width=f+'%';
-      fill.innerText=`Level ${cur} af ${t}`;
+      const f = Math.round((cur / t) * 100);
+      fill.style.width = f + '%';
+      fill.innerText = `Level ${cur} af ${t}`;
     }
 
-    /* we spawn more balls, with random bright or pastel colors. */
     function spawnRollingBalls(){
       const container = document.getElementById('rollingBallsContainer');
       if(!container)return;
 
       const numBalls = 12; // increased from 5 to 12
-      for(let i=0; i<numBalls; i++){
+      for(let i = 0; i < numBalls; i++){
         const ball = document.createElement('div');
         ball.classList.add('ball');
 
-        /* create a random color with more brightness/saturation. let's do HSL. */
         const hue = Math.floor(Math.random() * 360);
         const saturation = Math.floor(Math.random() * 40 + 60); // 60..100
         const lightness = Math.floor(Math.random() * 40 + 40); // 40..80
         ball.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 
-        /* random size: bigger range for variety */
-        const size = Math.random()*100 + 50; // 50..150 px
-        ball.style.width = size+ 'px';
-        ball.style.height = size+ 'px';
+        const size = Math.random() * 100 + 50; // 50..150 px
+        ball.style.width = size + 'px';
+        ball.style.height = size + 'px';
 
-        /* random start x,y coords (some off-screen) */
-        const startX = Math.random()*100 - 50; // -50..50 vw
-        const startY = Math.random()*100 - 50; // -50..50 vh
+        const startX = Math.random() * 100 - 50; // -50..50 vw
+        const startY = Math.random() * 100 - 50; // -50..50 vh
         ball.style.top = `${startY}vh`;
-        ball.style.left= `${startX}vw`;
+        ball.style.left = `${startX}vw`;
 
-        /* random direction & speed. We'll define a keyframe that moves it diagonally. */
         const driftName = `ballDrift${i}`;
-        const endX = Math.random()*100 - 50; // random end coords
-        const endY = Math.random()*100 - 50;
-        const duration = Math.random()*20 + 10; // 10..30s
+        const endX = Math.random() * 100 - 50;
+        const endY = Math.random() * 100 - 50;
+        const duration = Math.random() * 20 + 10; // 10..30s
 
         const styleSheet = document.styleSheets[0];
         styleSheet.insertRule(`@keyframes ${driftName} {
