@@ -13,11 +13,13 @@
       width: 100%;
       height: 100%;
       font-family: Arial, sans-serif;
-      overflow: hidden; /* so balls won't create scrollbars */
+      overflow: hidden;
       background: #ffffff;
     }
+    /* Use a column flex layout to stack game container and contact buttons */
     body {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
@@ -52,6 +54,7 @@
       height: 600px;
       z-index: 1;
       overflow: hidden;
+      margin-bottom: 20px; /* Added extra margin to separate from contact buttons */
     }
     .start-screen {
       position: absolute;
@@ -94,7 +97,7 @@
     }
     .progress-bar {
       width: 100%;
-      height: 26px;
+      height: 40px; /* Increased height */
       background: #e9ecef;
       border-radius: 13px;
       overflow: hidden;
@@ -105,6 +108,7 @@
     .progress-fill {
       background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       height: 100%;
+      line-height: 40px; /* Center text vertically */
       color: #fff;
       display: flex;
       align-items: center;
@@ -164,6 +168,12 @@
     .selected {
       background: #007bff !important;
       color: #fff !important;
+    }
+    /* Green background for correct answers */
+    .correctOption {
+      background: #28a745 !important;
+      color: #fff !important;
+      font-weight: bold;
     }
     .shake {
       animation: shake 0.5s;
@@ -248,6 +258,46 @@
     .overlay-content button:hover {
       background: #218838;
     }
+    /* Contact Buttons Container */
+    #contactButtons {
+      position: relative;
+      z-index: 2; /* Ensure contact buttons are above other elements */
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    #contactButtons a {
+      text-decoration: none;
+    }
+    #contactButtons button {
+      background: #0073b1; /* LinkedIn blue */
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #contactButtons button:hover {
+      background: #005582;
+    }
+    /* Email button styling */
+    #contactButtons button.email {
+      background: #D44638; /* Gmail red */
+    }
+    #contactButtons button.email:hover {
+      background: #A83224;
+    }
+    /* Inline SVG icons */
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -256,17 +306,11 @@
     <div class="start-screen" id="startScreen">
       <h2>Velkommen til SERP Sniper! 1</h2>
       <p>Dette spil hjælper dig med at optimere din side.</p>
-      <p>
-        Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices.
-      </p>
+      <p>Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices.</p>
       <br>
-      <p>
-        Vælg den mest oplagte Meta titel, meta beskrivelse og H1 overskrift og gennemfør spillet.
-      </p>
+      <p>Vælg den mest oplagte Meta titel, meta beskrivelse og H1 overskrift og gennemfør spillet.</p>
       <br>
-      <p>
-        Klik "Start spillet" for at starte!
-      </p>
+      <p>Klik "Start spillet" for at starte!</p>
       <button id="startButton">Start spillet</button>
     </div>
     <div class="progress-bar">
@@ -284,18 +328,39 @@
     <div class="overlay" id="levelCompleteOverlay">
       <div class="overlay-content">
         <h2>Level Complete!</h2>
-        <!-- The overlay now shows "Godt klaret" on the first line and a random SEO fact on the second line -->
+        <!-- Overlay displays "Godt klaret" on first line and a random SEO fact on the second -->
         <p id="overlayMsg"></p>
         <button id="nextLevelBtn">Næste Level</button>
       </div>
     </div>
+  </div>
+  <!-- Contact Buttons Below the Game Container -->
+  <div id="contactButtons">
+    <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-PROFILE" target="_blank">
+      <button>
+        <!-- LinkedIn Icon -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837 0 1.357-.554 1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82 0-1.357.537-1.357 1.248 0 .694.52 1.248 1.326 1.248h.015zm4.908 8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876 1.245-.876.877 0 1.228.66 1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357 0-1.96.75-2.29 1.285v.03h.015a6.22 6.22 0 0 1 .015-.03V6.169h-2.4z"/>
+        </svg>
+        LinkedIn
+      </button>
+    </a>
+    <a href="mailto:your.email@example.com">
+      <button class="email">
+        <!-- Email Icon (Envelope) -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.708 2.827L15 11.105V5.383zm-.034 6.042l-5.16-3.105L8 9.583l-1.807-.783-5.16 3.105A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.575zM1 5.383v5.722l4.708-2.895L1 5.383z"/>
+        </svg>
+        Email
+      </button>
+    </a>
   </div>
   <script>
     let streak = 0;
     let level = 1; // Start at level 1
     let levelCompleted = false; // Prevent multiple clicks once level is complete
 
-    // A helper function to shuffle an array (Fisher-Yates)
+    // Shuffle array using Fisher-Yates algorithm.
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -304,7 +369,7 @@
       return array;
     }
 
-    // Define business cases for each level.
+    // Business cases for each level.
     const businessCases = {
       1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
       2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
@@ -318,8 +383,7 @@
       10: "Du administrerer et rejsebureau i Roskilde og vil øge din digitale tilstedeværelse."
     };
 
-    // Define answer options for each level.
-    // For each category, we store an array of answer strings.
+    // Answer options for each level.
     const answerOptions = {
       1: {
         title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
@@ -373,10 +437,9 @@
       }
     };
 
-    // Define the correct answers for each level.
-    // In this design the correct answer is the one at the original index as set here.
+    // The correctAnswers object indicates the original index (0, 1, or 2) of the correct answer.
     const correctAnswers = {
-      1:  { title: 0, meta: 0, h1: 0 },
+      1:  { title: 1, meta: 1, h1: 1 },
       2:  { title: 0, meta: 0, h1: 0 },
       3:  { title: 0, meta: 0, h1: 0 },
       4:  { title: 0, meta: 0, h1: 0 },
@@ -388,10 +451,9 @@
       10: { title: 0, meta: 0, h1: 0 }
     };
 
-    // Total levels
-    const maxLevel = 10;
+    const maxLevel = 10; // Total levels
 
-    // Global variable to hold the shuffled options for the current level.
+    // Global variable to hold the shuffled answer objects for each category.
     let currentShuffledOptions = {};
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -415,13 +477,11 @@
       levelCompleted = false; // Reset flag for new level
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
-      // Re-enable the "Tjek min placering" button for the new level
-      document.getElementById('checkRankBtn').disabled = false;
+      document.getElementById('checkRankBtn').disabled = false; // Re-enable button
 
-      // For each category, build and shuffle the answer objects.
+      // Build and shuffle answer objects for each category.
       currentShuffledOptions = {};
       ['title', 'meta', 'h1'].forEach(category => {
-        // Create an array of objects { text, isCorrect }
         let options = answerOptions[level][category].map((text, index) => {
           return {
             text: text,
@@ -433,30 +493,26 @@
 
       const grid = document.getElementById('optionsGrid');
       if (!grid) return;
-
-      // Remove old rows beyond headings
+      // Remove old answer rows (keeping the three headings)
       while (grid.children.length > 3) {
         grid.removeChild(grid.lastChild);
       }
-
       // Create cells for each category from the shuffled arrays.
       for (let i = 0; i < 3; i++){
         const titleCell = createOptionCellFromObject('title', currentShuffledOptions['title'][i]);
         const metaCell  = createOptionCellFromObject('meta', currentShuffledOptions['meta'][i]);
         const h1Cell    = createOptionCellFromObject('h1', currentShuffledOptions['h1'][i]);
-
         grid.appendChild(titleCell);
         grid.appendChild(metaCell);
         grid.appendChild(h1Cell);
       }
     }
 
-    // Create an option cell using an answer object.
+    // Create an option cell from an answer object.
     function createOptionCellFromObject(category, optionObj){
       const cell = document.createElement('div');
       cell.classList.add('option');
       cell.innerText = optionObj.text;
-      // Store whether this option is correct in a dataset property.
       cell.dataset.correct = optionObj.isCorrect ? "true" : "false";
       cell.dataset.category = category;
       cell.onclick = () => {
@@ -472,9 +528,8 @@
     }
 
     function calculateRank(){
-      if (levelCompleted) return; // Ignore further clicks if level is complete
+      if (levelCompleted) return; // Prevent multiple submissions
 
-      // For each category, find the selected cell.
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
@@ -484,24 +539,24 @@
         return;
       }
 
-      // Check if all selected cells have dataset.correct set to "true"
-      const isCorrect = (titleSel.dataset.correct === "true" &&
-                         metaSel.dataset.correct === "true" &&
-                         h1Sel.dataset.correct === "true");
+      // Count how many answers are correct.
+      let correctCount = 0;
+      if (titleSel.dataset.correct === "true") correctCount++;
+      if (metaSel.dataset.correct === "true") correctCount++;
+      if (h1Sel.dataset.correct === "true") correctCount++;
 
-      if (isCorrect) {
+      if (correctCount === 3) {
         levelCompleted = true;
         document.getElementById('checkRankBtn').disabled = true;
         streak++;
-        if (streak >= 2) {
-          showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
-        } else {
-          showMessage('Godt klaret! Du valgte de mest optimale svar.', false);
-        }
+        showMessage(`Godt klaret! Du valgte de mest optimale svar.`, false);
         setTimeout(() => {
           triggerConfetti();
           showLevelComplete();
         }, 500);
+      } else if (correctCount === 2) {
+        // Stay on current level and inform user.
+        showMessage(`Næsten rigtig – du var tæt på!`, false);
       } else {
         streak = 0;
         document.querySelector('.game-container').classList.add('shake');
@@ -518,8 +573,14 @@
       r.style.color = isError ? 'red' : 'green';
     }
 
-    // Updated function: displays "Godt klaret" on the first line and a random SEO fact on the second.
+    // Display overlay, highlight correct answers, and show random SEO fact.
     function showLevelComplete(){
+      // Highlight all correct answer cells with a green background.
+      document.querySelectorAll('.option').forEach(function(cell) {
+        if (cell.dataset.correct === "true") {
+          cell.classList.add('correctOption');
+        }
+      });
       const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
@@ -548,6 +609,7 @@
         document.getElementById('result').innerText = '';
         loadLevel();
       } else {
+        // Congratulate when all levels are completed.
         document.getElementById('result').style.color = 'green';
         document.getElementById('result').innerText = '🎉 Du har gennemført alle levels! 🎉';
       }
@@ -574,39 +636,31 @@
     function spawnRollingBalls(){
       const container = document.getElementById('rollingBallsContainer');
       if (!container) return;
-
       const numBalls = 12;
       for (let i = 0; i < numBalls; i++){
         const ball = document.createElement('div');
         ball.classList.add('ball');
-
         const hue = Math.floor(Math.random() * 360);
         const saturation = Math.floor(Math.random() * 40 + 60);
         const lightness = Math.floor(Math.random() * 40 + 40);
         ball.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-
         const size = Math.random() * 100 + 50;
         ball.style.width = size + 'px';
         ball.style.height = size + 'px';
-
         const startX = Math.random() * 100 - 50;
         const startY = Math.random() * 100 - 50;
         ball.style.top = `${startY}vh`;
         ball.style.left = `${startX}vw`;
-
         const driftName = `ballDrift${i}`;
         const endX = Math.random() * 100 - 50;
         const endY = Math.random() * 100 - 50;
         const duration = Math.random() * 20 + 10;
-
         const styleSheet = document.styleSheets[0];
         styleSheet.insertRule(`@keyframes ${driftName} {
           0%   { transform: translate(0,0); }
           100% { transform: translate(${endX}vw, ${endY}vh); }
         }`, styleSheet.cssRules.length);
-
         ball.style.animation = `${driftName} ${duration}s ease-in-out infinite alternate`;
-
         container.appendChild(ball);
       }
     }
