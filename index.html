@@ -86,7 +86,6 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: transform 0.2s ease;
-      margin-bottom: 20px;
     }
     .start-screen button:hover {
       transform: scale(1.05);
@@ -259,15 +258,10 @@
   <div class="game-container">
     <div class="start-screen" id="startScreen">
       <h2>Velkommen til SERP Sniper!</h2>
-      <p>Dette spil hjælper dig med at optimere din side.</p>
+      <p>Dette spil hjælper dig med at optimere din side. Klik for at starte!</p>
       <p>
-        Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices.
-        <br>
+        Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices. 
         Vælg den mest oplagte Meta titel, meta beskrivelse og H1 overskrift og gennemfør spillet.
-      </p>
-      <br>
-      <p>
-        Klik "Start spillet" for at starte!
       </p>
       <button id="startButton">Start spillet</button>
     </div>
@@ -294,6 +288,7 @@
   <script>
     let streak = 0;
     let level = 1; // Initialize level to start at 1
+    let levelCompleted = false; // Flag to block multiple clicks once level is complete
 
     // Define business cases for each level.
     const businessCases = {
@@ -398,6 +393,7 @@
     }
 
     function loadLevel(){
+      levelCompleted = false; // Reset flag for new level
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
 
@@ -448,6 +444,8 @@
     }
 
     function calculateRank(){
+      if (levelCompleted) return; // Ignore further clicks if level is already completed
+
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
@@ -495,6 +493,7 @@
     }
 
     function showLevelComplete(){
+      levelCompleted = true; // Mark level as complete to block further clicks
       const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
