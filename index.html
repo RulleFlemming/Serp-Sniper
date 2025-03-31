@@ -14,7 +14,7 @@
       height: 100%;
       font-family: Arial, sans-serif;
       overflow: hidden; /* so balls won't create scrollbars */
-      background: #ffffff; /* pure white background */
+      background: #ffffff;
     }
     body {
       display: flex;
@@ -23,7 +23,7 @@
       text-align: center;
       position: relative;
     }
-    /* Container for all rolling balls, behind main content */
+    /* Container for rolling balls */
     .rolling-balls {
       position: absolute;
       top: 0;
@@ -46,10 +46,10 @@
       background: #fff;
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
       max-width: 800px;
       width: 90%;
-      height: 500px;
+      height: 600px;
       z-index: 1;
       overflow: hidden;
     }
@@ -161,11 +161,6 @@
       transform: translateY(-2px);
       background: #e0e0e0;
     }
-    .correctOption {
-      background: #28a745 !important;
-      color: #fff !important;
-      font-weight: bold;
-    }
     .selected {
       background: #007bff !important;
       color: #fff !important;
@@ -189,7 +184,6 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 20px;
-      margin-bottom: 20px;
       animation: fadeInUp 0.5s ease;
       font-weight: 600;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -290,15 +284,25 @@
     <div class="overlay" id="levelCompleteOverlay">
       <div class="overlay-content">
         <h2>Level Complete!</h2>
-        <p id="overlayMsg">Godt klaret!</p>
+        <!-- The overlay now shows "Godt klaret" on the first line and a random SEO fact on the second line -->
+        <p id="overlayMsg"></p>
         <button id="nextLevelBtn">Næste Level</button>
       </div>
     </div>
   </div>
   <script>
     let streak = 0;
-    let level = 1; // Initialize level to start at 1
-    let levelCompleted = false; // Flag to block further clicks once level is complete
+    let level = 1; // Start at level 1
+    let levelCompleted = false; // Prevent multiple clicks once level is complete
+
+    // A helper function to shuffle an array (Fisher-Yates)
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
     // Define business cases for each level.
     const businessCases = {
@@ -315,6 +319,7 @@
     };
 
     // Define answer options for each level.
+    // For each category, we store an array of answer strings.
     const answerOptions = {
       1: {
         title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
@@ -369,6 +374,7 @@
     };
 
     // Define the correct answers for each level.
+    // In this design the correct answer is the one at the original index as set here.
     const correctAnswers = {
       1:  { title: 0, meta: 0, h1: 0 },
       2:  { title: 0, meta: 0, h1: 0 },
@@ -382,8 +388,11 @@
       10: { title: 0, meta: 0, h1: 0 }
     };
 
-    // Update maxLevel to match the total number of levels.
+    // Total levels
     const maxLevel = 10;
+
+    // Global variable to hold the shuffled options for the current level.
+    let currentShuffledOptions = {};
 
     document.addEventListener('DOMContentLoaded', () => {
       initGame();
@@ -406,8 +415,21 @@
       levelCompleted = false; // Reset flag for new level
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
-      // Re-enable the "Tjek min placering" button on new level
+      // Re-enable the "Tjek min placering" button for the new level
       document.getElementById('checkRankBtn').disabled = false;
+
+      // For each category, build and shuffle the answer objects.
+      currentShuffledOptions = {};
+      ['title', 'meta', 'h1'].forEach(category => {
+        // Create an array of objects { text, isCorrect }
+        let options = answerOptions[level][category].map((text, index) => {
+          return {
+            text: text,
+            isCorrect: (index === correctAnswers[level][category])
+          };
+        });
+        currentShuffledOptions[category] = shuffle(options);
+      });
 
       const grid = document.getElementById('optionsGrid');
       if (!grid) return;
@@ -417,10 +439,11 @@
         grid.removeChild(grid.lastChild);
       }
 
+      // Create cells for each category from the shuffled arrays.
       for (let i = 0; i < 3; i++){
-        const titleCell = createOptionCell('title', i);
-        const metaCell  = createOptionCell('meta', i);
-        const h1Cell    = createOptionCell('h1', i);
+        const titleCell = createOptionCellFromObject('title', currentShuffledOptions['title'][i]);
+        const metaCell  = createOptionCellFromObject('meta', currentShuffledOptions['meta'][i]);
+        const h1Cell    = createOptionCellFromObject('h1', currentShuffledOptions['h1'][i]);
 
         grid.appendChild(titleCell);
         grid.appendChild(metaCell);
@@ -428,25 +451,18 @@
       }
     }
 
-    function createOptionCell(category, index){
+    // Create an option cell using an answer object.
+    function createOptionCellFromObject(category, optionObj){
       const cell = document.createElement('div');
       cell.classList.add('option');
-
-      const text = answerOptions[level][category][index];
-      cell.innerText = text;
-
-      if (correctAnswers[level][category] === index) {
-        cell.classList.add('correctOption');
-      }
-
+      cell.innerText = optionObj.text;
+      // Store whether this option is correct in a dataset property.
+      cell.dataset.correct = optionObj.isCorrect ? "true" : "false";
       cell.dataset.category = category;
-      cell.dataset.index = index;
-
       cell.onclick = () => {
         removeSelected(category);
         cell.classList.add('selected');
       };
-
       return cell;
     }
 
@@ -456,9 +472,9 @@
     }
 
     function calculateRank(){
-      // If the level is already marked complete, ignore further clicks
-      if (levelCompleted) return;
+      if (levelCompleted) return; // Ignore further clicks if level is complete
 
+      // For each category, find the selected cell.
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
@@ -468,21 +484,14 @@
         return;
       }
 
-      const titleIndex = +titleSel.dataset.index;
-      const metaIndex  = +metaSel.dataset.index;
-      const h1Index    = +h1Sel.dataset.index;
-
-      const isCorrect = (
-        titleIndex === correctAnswers[level].title &&
-        metaIndex === correctAnswers[level].meta &&
-        h1Index === correctAnswers[level].h1
-      );
+      // Check if all selected cells have dataset.correct set to "true"
+      const isCorrect = (titleSel.dataset.correct === "true" &&
+                         metaSel.dataset.correct === "true" &&
+                         h1Sel.dataset.correct === "true");
 
       if (isCorrect) {
-        // Immediately mark the level as complete and disable further clicks
         levelCompleted = true;
         document.getElementById('checkRankBtn').disabled = true;
-
         streak++;
         if (streak >= 2) {
           showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
@@ -509,6 +518,7 @@
       r.style.color = isError ? 'red' : 'green';
     }
 
+    // Updated function: displays "Godt klaret" on the first line and a random SEO fact on the second.
     function showLevelComplete(){
       const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
@@ -523,7 +533,7 @@
         "HTTPS og et sikkerhedscertifikat øger troværdigheden og rangering."
       ];
       const i = Math.floor(Math.random() * facts.length);
-      document.getElementById('overlayMsg').textContent = 'Godt klaret! ' + facts[i];
+      document.getElementById('overlayMsg').innerHTML = "Godt klaret<br>" + facts[i];
       document.getElementById('levelCompleteOverlay').style.display = 'flex';
     }
 
