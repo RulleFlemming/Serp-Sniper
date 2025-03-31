@@ -49,7 +49,7 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       max-width: 800px;
       width: 90%;
-      height: 600px; /* Fixed: added "px" */
+      height: 600px;
       z-index: 1;
       overflow: hidden;
     }
@@ -87,7 +87,7 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: transform 0.2s ease;
-      margin-bottom: 20px; /* Fixed: removed the space before 'px' */
+      margin-bottom: 20px;
     }
     .start-screen button:hover {
       transform: scale(1.05);
@@ -259,7 +259,7 @@
   <div class="rolling-balls" id="rollingBallsContainer"></div>
   <div class="game-container">
     <div class="start-screen" id="startScreen">
-      <h2>Velkommen til SERP Sniper! 5</h2>
+      <h2>Velkommen til SERP Sniper! 1</h2>
       <p>Dette spil hjælper dig med at optimere din side.</p>
       <p>
         Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices.
@@ -297,7 +297,7 @@
   <script>
     let streak = 0;
     let level = 1; // Initialize level to start at 1
-    let levelCompleted = false; // Flag to block multiple clicks once level is complete
+    let levelCompleted = false; // Flag to block further clicks once level is complete
 
     // Define business cases for each level.
     const businessCases = {
@@ -405,6 +405,8 @@
       levelCompleted = false; // Reset flag for new level
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
+      // Re-enable the "Tjek min placering" button on new level
+      document.getElementById('checkRankBtn').disabled = false;
 
       const grid = document.getElementById('optionsGrid');
       if (!grid) return;
@@ -453,7 +455,8 @@
     }
 
     function calculateRank(){
-      if (levelCompleted) return; // Ignore further clicks if level is already completed
+      // If the level is already marked complete, ignore further clicks
+      if (levelCompleted) return;
 
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
@@ -475,6 +478,10 @@
       );
 
       if (isCorrect) {
+        // Immediately mark the level as complete and disable further clicks
+        levelCompleted = true;
+        document.getElementById('checkRankBtn').disabled = true;
+
         streak++;
         if (streak >= 2) {
           showMessage(`Godt klaret! Du har nu en streak på ${streak} korrekte i træk!`, false);
@@ -502,7 +509,6 @@
     }
 
     function showLevelComplete(){
-      levelCompleted = true; // Mark level as complete to block further clicks
       const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
