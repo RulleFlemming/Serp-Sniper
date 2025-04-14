@@ -4,36 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SERP Sniper - SEO Optimeringsspil</title>
+  
+  <!-- Confetti til Level Complete -->
   <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
+  
   <style>
-    /* White background, with rolling blurred colored balls. */
+    /* Grundlæggende nulstilling og layout */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      height: auto;
       font-family: Arial, sans-serif;
-      overflow: hidden;
-      background: #ffffff;
+      background: #fff;
+      overflow-x: hidden;
     }
-    /* Use a column flex layout to stack game container and contact buttons */
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
       position: relative;
     }
-    /* Container for rolling balls */
+    
+    /* Baggrundskugler */
     .rolling-balls {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
       z-index: 0;
+      overflow: hidden;
     }
     .ball {
       position: absolute;
@@ -43,26 +45,27 @@
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
     }
+    
+    /* Spilcontainer – samme for både desktop og mobil */
     .game-container {
       position: relative;
+      z-index: 1;
       background: #fff;
+      width: 95%;
+      max-width: 800px;
+      margin: 30px 0;
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 800px;
-      width: 90%;
-      height: 600px;
-      z-index: 1;
-      overflow: hidden;
-      margin-bottom: 20px; /* Added extra margin to separate from contact buttons */
     }
+    
+    /* Startskærm – dækker hele containeren */
     .start-screen {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: rgba(0,0,0,0.8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -72,12 +75,13 @@
     }
     .start-screen h2 {
       margin-bottom: 1rem;
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
     .start-screen p {
-      max-width: 500px;
-      margin: 0 20px 1rem;
-      line-height: 1.5;
+      max-width: 400px;
+      margin: 0 auto 1rem;
+      line-height: 1.4;
+      font-size: 0.95rem;
     }
     .start-screen button {
       background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
@@ -90,14 +94,16 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: transform 0.2s ease;
-      margin-bottom: 20px;
+      margin-top: 1rem;
     }
     .start-screen button:hover {
       transform: scale(1.05);
     }
+    
+    /* Progressbar */
     .progress-bar {
       width: 100%;
-      height: 40px; /* Increased height */
+      height: 30px;
       background: #e9ecef;
       border-radius: 13px;
       overflow: hidden;
@@ -108,47 +114,46 @@
     .progress-fill {
       background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
       height: 100%;
-      line-height: 40px; /* Center text vertically */
+      line-height: 30px;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       transition: width 0.4s ease;
+      font-size: 0.9rem;
     }
+    
+    /* Overskrift og Business Case */
     h1 {
-      margin-top: 10px;
-      animation: fadeInDown 0.5s ease;
+      margin: 0.5rem 0;
       font-weight: 700;
-      letter-spacing: 1px;
+      font-size: 1.2rem;
     }
-    @keyframes fadeInDown {
-      0% { transform: translateY(-20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+    #businessCase {
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
     }
-    .options-grid {
+    
+    /* --- Desktopvisning: Brug originalt gridlayout --- */
+    #optionsGrid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto auto auto;
       gap: 10px;
       margin-top: 20px;
       text-align: center;
-      animation: fadeIn 0.5s ease;
     }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    .grid-heading {
+    /* Headings for desktop */
+    #optionsGrid .grid-heading {
       background: #fcfcfc;
       border: 1px solid #ddd;
       border-radius: 5px;
       font-weight: bold;
       padding: 12px;
-      animation: fadeIn 0.5s ease;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
-    .option {
+    /* Svarmuligheder for desktop */
+    #optionsGrid .option {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -161,20 +166,222 @@
       transition: transform 0.2s ease, background 0.2s ease;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-    .option:hover {
+    #optionsGrid .option:hover {
       transform: translateY(-2px);
       background: #e0e0e0;
     }
-    .selected {
+    #optionsGrid .selected {
       background: #007bff !important;
       color: #fff !important;
     }
-    /* Green background for correct answers */
-    .correctOption {
+    #optionsGrid .correctOption {
       background: #28a745 !important;
       color: #fff !important;
       font-weight: bold;
     }
+    
+    /* --- Mobilvisning: Skjul desktop-grid og brug mobilcontainer --- */
+    #mobileOptionsContainer {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    @media (max-width: 600px) {
+      #optionsGrid {
+        display: none;
+      }
+      #mobileOptionsContainer {
+        display: block;
+      }
+      
+      /* For hver kategori vises overskrift og svarmuligheder i én boks */
+      .category-section {
+        position: relative;
+        text-align: left;
+        background: #fafafa;
+        padding: 1rem;
+        margin-bottom: 1.2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      .category-section h3 {
+        margin: 0 0 0.6rem 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        background: transparent;
+        border: none;
+        pointer-events: none; /* Sørg for, at overskriften ikke blokerer for klik på svarmulighederne */
+      }
+      .category-section .option {
+        background: #f0f0f0;
+        margin: 0.4rem 0;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 0;
+      }
+      .category-section .option:hover {
+        background: #e0e0e0;
+      }
+      .category-section .selected {
+        background: #007bff !important;
+        color: #fff !important;
+      }
+      .category-section .correctOption {
+        background: #28a745 !important;
+        color: #fff !important;
+        font-weight: bold;
+      }
+    }
+    
+    /* Knap og resultat (samme for begge visninger) */
+    #checkRankBtn {
+      display: block;
+      margin: 1.5rem auto 0 auto;
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 1rem;
+    }
+    #checkRankBtn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #2b4ca3 0%, #0c1038 100%);
+    }
+    #result {
+      margin-top: 1rem;
+      min-height: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    /* Overlays */
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .overlay-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 280px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .overlay-content h2 {
+      margin: 0 0 10px 0;
+    }
+    .overlay-content p {
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    .overlay-content button {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .overlay-content button:hover {
+      background: #218838;
+    }
+    .all-levels-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 11;
+    }
+    .all-levels-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .all-levels-content h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.5rem;
+      color: #28a745;
+    }
+    .all-levels-content p {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .all-levels-content button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .all-levels-content button:hover {
+      background: #0056b3;
+    }
+    
+    /* Kontaktknapper */
+    #contactButtons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      z-index: 2;
+    }
+    #contactButtons a {
+      text-decoration: none;
+    }
+    #contactButtons button {
+      background: #0073b1;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    #contactButtons button:hover {
+      background: #005582;
+    }
+    #contactButtons button.email {
+      background: #D44638;
+    }
+    #contactButtons button.email:hover {
+      background: #A83224;
+    }
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    /* Rysteeffekt */
     .shake {
       animation: shake 0.5s;
     }
@@ -186,160 +393,74 @@
       80% { transform: translateX(5px); }
       100% { transform: translateX(0); }
     }
-    #checkRankBtn {
-      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-      color: #fff;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-      animation: fadeInUp 0.5s ease;
-      font-weight: 600;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    @keyframes fadeInUp {
-      0% { transform: translateY(20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-    #checkRankBtn:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(90deg, #2b4ca3 0%, #0c1038 100%);
-    }
-    #result {
-      margin-top: 10px;
-      min-height: 30px;
-      font-weight: 600;
-    }
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      animation: fadeInOverlay 0.5s ease;
-    }
-    @keyframes fadeInOverlay {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    .overlay-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      width: 300px;
-      animation: popIn 0.5s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .overlay-content h2 {
-      margin: 0 0 10px 0;
-    }
-    .overlay-content button {
-      background: #28a745;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-      font-weight: 600;
-      transition: background 0.2s ease;
-    }
-    .overlay-content button:hover {
-      background: #218838;
-    }
-    /* Contact Buttons Container */
-    #contactButtons {
-      position: relative;
-      z-index: 2; /* Ensure contact buttons are above other elements */
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    #contactButtons a {
-      text-decoration: none;
-    }
-    #contactButtons button {
-      background: #0073b1; /* LinkedIn blue */
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    #contactButtons button:hover {
-      background: #005582;
-    }
-    /* Email button styling */
-    #contactButtons button.email {
-      background: #D44638; /* Gmail red */
-    }
-    #contactButtons button.email:hover {
-      background: #A83224;
-    }
-    /* Inline SVG icons */
-    .icon {
-      display: inline-block;
-      vertical-align: middle;
-    }
   </style>
 </head>
 <body>
+  <!-- Baggrundskugler -->
   <div class="rolling-balls" id="rollingBallsContainer"></div>
+  
   <div class="game-container">
+    <!-- Startskærm -->
     <div class="start-screen" id="startScreen">
-      <h2>Velkommen til SERP Sniper! 1</h2>
-      <p>Dette spil hjælper dig med at optimere din side.</p>
-      <p>Husk på at der ikke er et decideret korrekt svar i SEO, men der er best practices.</p>
-      <br>
-      <p>Vælg den mest oplagte Meta titel, meta beskrivelse og H1 overskrift og gennemfør spillet.</p>
-      <br>
-      <p>Klik "Start spillet" for at starte!</p>
+      <h2>Velkommen til SERP Sniper!</h2>
+      <p>
+        Dette spil hjælper dig med at optimere din side.<br>
+        Husk, at der ikke er ét “rigtigt” SEO-svar, men der findes best practices.<br>
+        Vælg de mest oplagte svar.
+      </p>
       <button id="startButton">Start spillet</button>
     </div>
+    
+    <!-- Progressbar -->
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill" style="width: 0%;">Level 1 af 10</div>
     </div>
+    
     <h1>SERP Sniper: Optimer for at nå #1</h1>
     <p id="businessCase"></p>
-    <div class="options-grid" id="optionsGrid">
-      <div class="grid-heading">Meta Titel</div>
-      <div class="grid-heading">Meta Beskrivelse</div>
+    
+    <!-- Desktop-grid: vises på store skærme -->
+    <div id="optionsGrid">
+      <!-- De 3 statiske heading-celler -->
+      <div class="grid-heading">Meta titel</div>
+      <div class="grid-heading">Meta beskrivelse</div>
       <div class="grid-heading">H1 Overskrift</div>
+      <!-- Svarmulighederne indsættes her via JS -->
     </div>
+    
+    <!-- Mobil-container: vises på skærmbrede ≤600px -->
+    <div id="mobileOptionsContainer">
+      <!-- Kategori-sektioner opbygges via JS her -->
+    </div>
+    
     <button id="checkRankBtn">Tjek min placering</button>
     <p id="result"></p>
+    
+    <!-- Overlay: Level Complete -->
     <div class="overlay" id="levelCompleteOverlay">
       <div class="overlay-content">
         <h2>Level Complete!</h2>
-        <!-- Overlay displays "Godt klaret" on first line and a random SEO fact on the second -->
         <p id="overlayMsg"></p>
         <button id="nextLevelBtn">Næste Level</button>
       </div>
     </div>
   </div>
-  <!-- Contact Buttons Below the Game Container -->
+  
+  <!-- Overlay: Alle levels complete -->
+  <div class="all-levels-overlay" id="allLevelsOverlay">
+    <div class="all-levels-content">
+      <h2>Tillykke!</h2>
+      <p>Du har gennemført alle levels. Du er nu en ægte SEO-Sniper!</p>
+      <p>Overvej at dele spillet med dine kollegaer eller venner, så de også kan teste deres SEO-viden.</p>
+      <button id="allLevelsCloseBtn">Luk</button>
+    </div>
+  </div>
+  
+  <!-- Kontaktknapper -->
   <div id="contactButtons">
     <a href="https://www.linkedin.com/in/andreas-noah-m%C3%B8lle-jensen/" target="_blank">
       <button>
-        <!-- LinkedIn Icon -->
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
           <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837 0 1.357-.554 1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82 0-1.357.537-1.357 1.248 0 .694.52 1.248 1.326 1.248h.015zm4.908 8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876 1.245-.876.877 0 1.228.66 1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357 0-1.96.75-2.29 1.285v.03h.015a6.22 6.22 0 0 1 .015-.03V6.169h-2.4z"/>
         </svg>
         LinkedIn
@@ -347,20 +468,20 @@
     </a>
     <a href="mailto:anj@lazzaweb.dk">
       <button class="email">
-        <!-- Email Icon (Envelope) -->
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
           <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.708 2.827L15 11.105V5.383zm-.034 6.042l-5.16-3.105L8 9.583l-1.807-.783-5.16 3.105A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.575zM1 5.383v5.722l4.708-2.895L1 5.383z"/>
         </svg>
         Email
       </button>
     </a>
   </div>
+  
   <script>
     let streak = 0;
-    let level = 1; // Start at level 1
-    let levelCompleted = false; // Prevent multiple clicks once level is complete
-
-    // Shuffle array using Fisher-Yates algorithm.
+    let level = 1;
+    let levelCompleted = false;
+    
+    // Shuffle-algoritme: Fisher-Yates
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -368,8 +489,8 @@
       }
       return array;
     }
-
-    // Business cases for each level.
+    
+    // Forretningscases
     const businessCases = {
       1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
       2: "Du driver en webshop med bæredygtige sko og vil øge din online synlighed.",
@@ -382,62 +503,62 @@
       9: "Du ejer en tandlægeklinik i Vejle og ønsker at øge patienttilstrømningen.",
       10: "Du administrerer et rejsebureau i Roskilde og vil øge din digitale tilstedeværelse."
     };
-
-    // Answer options for each level.
+    
+    // Svarmuligheder
     const answerOptions = {
       1: {
-        title: ["Hyggelig café i Aarhus", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
-        meta:  ["Nyd en kop friskbrygget kaffe i hjertet af Aarhus", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
-        h1:    ["Velkommen til Café Aarhus", "Prøv vores specialkaffe", "Kaffe til lavpris"]
+        title: ["1", "Byens bedste kaffe", "Lav en kop kaffe hjemme"],
+        meta:  ["1", "Mød vennerne til en hyggelig brunch", "Kaffe hurtigt og billigt"],
+        h1:    ["1", "Prøv vores specialkaffe", "Kaffe til lavpris"]
       },
       2: {
-        title: ["Bæredygtige sko til enhver lejlighed", "Komfort og stil i ét", "Billige sko på tilbud"],
-        meta:  ["Find moderne og miljøvenlige sko til hele familien", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
-        h1:    ["Vores udvalg af bæredygtige sko", "Stil og komfort for alle", "Spar penge på fodtøj"]
+        title: ["1", "Komfort og stil i ét", "Billige sko på tilbud"],
+        meta:  ["1", "Vælg kvalitet og komfort med bæredygtige materialer", "Køb sko til halv pris i dag"],
+        h1:    ["1", "Stil og komfort for alle", "Spar penge på fodtøj"]
       },
       3: {
-        title: ["Bliv medlem af Odenses bedste fitnesscenter", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
-        meta:  ["Kom i form med vores personlige trænere og moderne faciliteter", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
-        h1:    ["Velkommen til Fitness Odense", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
+        title: ["1", "Træn med professionelle trænere", "Gratis træning for nye medlemmer"],
+        meta:  ["1", "Træn på dine vilkår med fleksible medlemskaber", "Få adgang til fitness for kun 99 kr./mdr."],
+        h1:    ["1", "Dit sundhedscenter i hjertet af byen", "Tilmeld dig i dag og kom i gang"]
       },
       4: {
-        title: ["Title test svar 1", "Title test svar 2", "Title test svar 3"],
-        meta:  ["Meta test svar 1", "Meta test svar 2", "Meta test svar 3"],
-        h1:    ["H1 test svar 1", "H1 test svar 2", "H1 test svar 3"]
+        title: ["1", "Title test svar 2", "Title test svar 3"],
+        meta:  ["1", "Meta test svar 2", "Meta test svar 3"],
+        h1:    ["1", "H1 test svar 2", "H1 test svar 3"]
       },
       5: {
-        title: ["Moderne boghandel i København", "Kultur og bøger i ét", "Find din næste favoritbog"],
-        meta:  ["Oplev et unikt udvalg af nichebøger", "Bøger for enhver smag og interesse", "Specialiseret udvalg af moderne litteratur"],
-        h1:    ["Velkommen til Boghandel København", "Din bogoplevelse venter", "Find din næste læseoplevelse"]
+        title: ["1", "Kultur og bøger i ét", "Find din næste favoritbog"],
+        meta:  ["1", "Bøger for enhver smag og interesse", "Specialiseret udvalg af moderne litteratur"],
+        h1:    ["1", "Din bogoplevelse venter", "Find din næste læseoplevelse"]
       },
       6: {
-        title: ["Restaurant i Aalborg med gourmetoplevelser", "Smagfuld mad i hjertet af Aalborg", "Traditionel mad med et twist"],
-        meta:  ["Oplev ægte gourmetmad med sæsonens råvarer", "Nyd en unik kulinarisk rejse i Aalborg", "Madoplevelser ud over det sædvanlige"],
-        h1:    ["Velkommen til Restaurant Aalborg", "Oplev ægte smagsoplevelser", "Gourmetmad i særklasse"]
+        title: ["1", "Smagfuld mad i hjertet af Aalborg", "Traditionel mad med et twist"],
+        meta:  ["1", "Nyd en unik kulinarisk rejse i Aalborg", "Madoplevelser ud over det sædvanlige"],
+        h1:    ["1", "Oplev ægte smagsoplevelser", "Gourmetmad i særklasse"]
       },
       7: {
-        title: ["Blomsterbutik i Esbjerg med farverige buketter", "Friske blomster til alle anledninger", "Kreative blomsterarrangementer"],
-        meta:  ["Find de smukkeste blomster og buketter", "Blomster designet med kærlighed og omhu", "Få blomsterlevering direkte til døren"],
-        h1:    ["Velkommen til Blomsterbutik Esbjerg", "Blomster der bringer glæde", "Skab et farverigt miljø"]
+        title: ["1", "Friske blomster til alle anledninger", "Kreative blomsterarrangementer"],
+        meta:  ["1", "Blomster designet med kærlighed og omhu", "Få blomsterlevering direkte til døren"],
+        h1:    ["1", "Blomster der bringer glæde", "Skab et farverigt miljø"]
       },
       8: {
-        title: ["Moderne tøjbutik i Randers med stil", "Find din personlige stil hos os", "Unikke modeudtryk for alle"],
-        meta:  ["Oplev de nyeste trends og tidløse klassikere", "Mode der inspirerer og imponerer", "Gå ikke glip af vores særlige kollektioner"],
-        h1:    ["Velkommen til Tøjbutik Randers", "Din stil, din mode", "Find din unikke stil"]
+        title: ["1", "Find din personlige stil hos os", "Unikke modeudtryk for alle"],
+        meta:  ["1", "Mode der inspirerer og imponerer", "Gå ikke glip af vores særlige kollektioner"],
+        h1:    ["1", "Din stil, din mode", "Find din unikke stil"]
       },
       9: {
-        title: ["Tandlægeklinik i Vejle med fokus på tryghed", "Få den bedste tandpleje i byen", "Moderne tandpleje med omsorg"],
-        meta:  ["Din sundhed og smil er vores prioritet", "Ekspert tandpleje til hele familien", "Tryg og moderne tandpleje"],
-        h1:    ["Velkommen til Tandlægeklinik Vejle", "Smil med selvtillid", "Tandpleje i topklasse"]
+        title: ["1", "Få den bedste tandpleje i byen", "Moderne tandpleje med omsorg"],
+        meta:  ["1", "Ekspert tandpleje til hele familien", "Tryg og moderne tandpleje"],
+        h1:    ["1", "Smil med selvtillid", "Tandpleje i topklasse"]
       },
       10: {
-        title: ["Rejsebureau i Roskilde med drømmeferier", "Oplev verden med vores unikke rejsepakker", "Skræddersyede rejseoplevelser til dig"],
-        meta:  ["Find din næste eventyrrejse med os", "Eksklusive rejsepakker og tilbud", "Rejseoplevelser der skaber minder for livet"],
-        h1:    ["Velkommen til Rejsebureau Roskilde", "Planlæg din drømmerejse", "Opdag verden med os"]
+        title: ["1", "Oplev verden med vores unikke rejsepakker", "Skræddersyede rejseoplevelser til dig"],
+        meta:  ["1", "Eksklusive rejsepakker og tilbud", "Rejseoplevelser der skaber minder for livet"],
+        h1:    ["1", "Planlæg din drømmerejse", "Opdag verden med os"]
       }
     };
-
-    // The correctAnswers object indicates the original index (0, 1, or 2) of the correct answer.
+    
+    // Korrekte svar (index)
     const correctAnswers = {
       1:  { title: 0, meta: 0, h1: 0 },
       2:  { title: 0, meta: 0, h1: 0 },
@@ -450,142 +571,182 @@
       9:  { title: 0, meta: 0, h1: 0 },
       10: { title: 0, meta: 0, h1: 0 }
     };
-
-    const maxLevel = 10; // Total levels
-
-    // Global variable to hold the shuffled answer objects for each category.
+    
+    const maxLevel = 10;
     let currentShuffledOptions = {};
-
+    
     document.addEventListener('DOMContentLoaded', () => {
       initGame();
       spawnRollingBalls();
       document.getElementById('startButton').onclick = startGame;
       document.getElementById('checkRankBtn').onclick = calculateRank;
       document.getElementById('nextLevelBtn').onclick = nextLevel;
+      if(document.getElementById('allLevelsCloseBtn')){
+        document.getElementById('allLevelsCloseBtn').onclick = closeAllLevelsOverlay;
+      }
     });
-
+    
     function initGame(){
       document.getElementById('startScreen').style.display = 'flex';
     }
-
+    
     function startGame(){
       document.getElementById('startScreen').style.display = 'none';
       loadLevel();
     }
-
+    
     function loadLevel(){
-      levelCompleted = false; // Reset flag for new level
+      levelCompleted = false;
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
-      document.getElementById('checkRankBtn').disabled = false; // Re-enable button
-
-      // Build and shuffle answer objects for each category.
-      currentShuffledOptions = {};
-      ['title', 'meta', 'h1'].forEach(category => {
-        let options = answerOptions[level][category].map((text, index) => {
-          return {
-            text: text,
-            isCorrect: (index === correctAnswers[level][category])
-          };
+      document.getElementById('checkRankBtn').disabled = false;
+      
+      // Hvis mobil (skærmbredde ≤600px), byg mobilversionen; ellers desktopversionen.
+      if (window.innerWidth <= 600) {
+        const container = document.getElementById('mobileOptionsContainer');
+        container.innerHTML = "";
+        
+        const categories = [
+          { key: 'title', label: 'Meta titel' },
+          { key: 'meta',  label: 'Meta beskrivelse' },
+          { key: 'h1',    label: 'H1 Overskrift' }
+        ];
+        
+        categories.forEach(cat => {
+          let arr = answerOptions[level][cat.key].map((text, index) => {
+            return {
+              text,
+              isCorrect: (index === correctAnswers[level][cat.key])
+            };
+          });
+          arr = shuffle(arr);
+          currentShuffledOptions[cat.key] = arr;
+          
+          const sectionDiv = document.createElement('div');
+          sectionDiv.classList.add('category-section');
+          
+          const h3 = document.createElement('h3');
+          h3.innerText = cat.label;
+          sectionDiv.appendChild(h3);
+          
+          arr.forEach(item => {
+            const optDiv = document.createElement('div');
+            optDiv.classList.add('option');
+            optDiv.dataset.category = cat.key;
+            optDiv.dataset.correct = item.isCorrect ? "true" : "false";
+            optDiv.innerText = item.text;
+            
+            optDiv.onclick = () => {
+              document.querySelectorAll(`.option[data-category='${cat.key}']`)
+                .forEach(o => o.classList.remove('selected'));
+              optDiv.classList.add('selected');
+            };
+            
+            sectionDiv.appendChild(optDiv);
+          });
+          
+          container.appendChild(sectionDiv);
         });
-        currentShuffledOptions[category] = shuffle(options);
-      });
-
-      const grid = document.getElementById('optionsGrid');
-      if (!grid) return;
-      // Remove old answer rows (keeping the three headings)
-      while (grid.children.length > 3) {
-        grid.removeChild(grid.lastChild);
+      } else {
+        // Desktopversion: brug det oprindelige grid (#optionsGrid)
+        const grid = document.getElementById('optionsGrid');
+        while (grid.children.length > 3) {
+          grid.removeChild(grid.lastChild);
+        }
+        currentShuffledOptions = {};
+        ['title', 'meta', 'h1'].forEach(category => {
+          let arr = answerOptions[level][category].map((text, index) => {
+            return {
+              text,
+              isCorrect: (index === correctAnswers[level][category])
+            };
+          });
+          arr = shuffle(arr);
+          currentShuffledOptions[category] = arr;
+        });
+        for (let i = 0; i < 3; i++) {
+          const titleCell = createOptionCell('title', currentShuffledOptions['title'][i]);
+          const metaCell  = createOptionCell('meta', currentShuffledOptions['meta'][i]);
+          const h1Cell    = createOptionCell('h1', currentShuffledOptions['h1'][i]);
+          grid.appendChild(titleCell);
+          grid.appendChild(metaCell);
+          grid.appendChild(h1Cell);
+        }
       }
-      // Create cells for each category from the shuffled arrays.
-      for (let i = 0; i < 3; i++){
-        const titleCell = createOptionCellFromObject('title', currentShuffledOptions['title'][i]);
-        const metaCell  = createOptionCellFromObject('meta', currentShuffledOptions['meta'][i]);
-        const h1Cell    = createOptionCellFromObject('h1', currentShuffledOptions['h1'][i]);
-        grid.appendChild(titleCell);
-        grid.appendChild(metaCell);
-        grid.appendChild(h1Cell);
-      }
+      
+      document.getElementById('result').innerText = "";
+      document.getElementById('result').style.color = "";
     }
-
-    // Create an option cell from an answer object.
-    function createOptionCellFromObject(category, optionObj){
+    
+    function createOptionCell(category, obj){
       const cell = document.createElement('div');
       cell.classList.add('option');
-      cell.innerText = optionObj.text;
-      cell.dataset.correct = optionObj.isCorrect ? "true" : "false";
       cell.dataset.category = category;
+      cell.dataset.correct  = obj.isCorrect ? "true" : "false";
+      cell.innerText        = obj.text;
+      
       cell.onclick = () => {
-        removeSelected(category);
+        document.querySelectorAll(`.option[data-category='${category}']`)
+          .forEach(o => o.classList.remove('selected'));
         cell.classList.add('selected');
       };
       return cell;
     }
-
-    function removeSelected(category){
-      const all = document.querySelectorAll(`.option[data-category='${category}']`);
-      all.forEach(o => o.classList.remove('selected'));
-    }
-
+    
     function calculateRank(){
-      if (levelCompleted) return; // Prevent multiple submissions
-
+      if (levelCompleted) return;
+      
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
-
+      
       if (!titleSel || !metaSel || !h1Sel){
-        showMessage('Vælg en mulighed i alle kategorier!', true);
+        showMessage("Vælg en mulighed i alle kategorier!", true);
         return;
       }
-
-      // Count how many answers are correct.
+      
       let correctCount = 0;
       if (titleSel.dataset.correct === "true") correctCount++;
-      if (metaSel.dataset.correct === "true") correctCount++;
-      if (h1Sel.dataset.correct === "true") correctCount++;
-
+      if (metaSel.dataset.correct  === "true") correctCount++;
+      if (h1Sel.dataset.correct    === "true") correctCount++;
+      
       if (correctCount === 3) {
         levelCompleted = true;
         document.getElementById('checkRankBtn').disabled = true;
-        streak++;
-        showMessage(`Godt klaret! Du valgte de mest optimale svar.`, false);
+        showMessage("Godt klaret! Du valgte de mest optimale svar.", false);
         setTimeout(() => {
           triggerConfetti();
           showLevelComplete();
         }, 500);
       } else if (correctCount === 2) {
-        // Stay on current level and inform user.
-        showMessage(`Næsten rigtig – du var tæt på!`, false);
+        showMessage("Næsten rigtig – du var tæt på!", false);
       } else {
         streak = 0;
         document.querySelector('.game-container').classList.add('shake');
         setTimeout(() => {
           document.querySelector('.game-container').classList.remove('shake');
         }, 500);
-        showMessage('Ikke helt korrekt – prøv at justere dine valg.', true);
+        showMessage("Ikke helt korrekt – prøv at justere dine valg.", true);
       }
     }
-
+    
     function showMessage(msg, isError){
       const r = document.getElementById('result');
       r.innerText = msg;
       r.style.color = isError ? 'red' : 'green';
     }
-
-    // Display overlay, highlight correct answers, and show random SEO fact.
+    
     function showLevelComplete(){
-      // Highlight all correct answer cells with a green background.
-      document.querySelectorAll('.option').forEach(function(cell) {
-        if (cell.dataset.correct === "true") {
-          cell.classList.add('correctOption');
+      document.querySelectorAll('.option').forEach(opt => {
+        if (opt.dataset.correct === "true") {
+          opt.classList.add('correctOption');
         }
       });
       const facts = [
         "Vidste du, at lange søgeord (long-tail) ofte har mindre konkurrence og højere konverteringsrate?",
         "Hastighed er afgørende! Google prioriterer hurtige hjemmesider i søgeresultaterne.",
-        "Strukturerede data kan hjælpe søgemaskiner med at forstå dit indhold bedre.",
-        "Unikke meta titler og beskrivelser kan forbedre klikraten i SERP'en.",
+        "Strukturerede data hjælper søgemaskiner med at forstå dit indhold bedre.",
+        "Unikke meta titler og beskrivelser forbedrer klikraten i SERP'en.",
         "Mobilvenlighed er et must – Google bruger mobile-first indeksering nu.",
         "Brugeroplevelse (UX) er lig med SEO – jo bedre UX, jo bedre placering typisk.",
         "Kvalitetsindhold er kongen. Gode tekster vinder næsten altid over SEO-tricks.",
@@ -594,29 +755,38 @@
         "HTTPS og et sikkerhedscertifikat øger troværdigheden og rangering."
       ];
       const i = Math.floor(Math.random() * facts.length);
-      document.getElementById('overlayMsg').innerHTML = "Godt klaret<br>" + facts[i];
+      document.getElementById('overlayMsg').innerHTML = "Godt klaret!<br/>" + facts[i];
       document.getElementById('levelCompleteOverlay').style.display = 'flex';
     }
-
+    
     function hideLevelComplete(){
       document.getElementById('levelCompleteOverlay').style.display = 'none';
     }
-
+    
     function nextLevel(){
       hideLevelComplete();
       if (level < maxLevel) {
         level++;
-        document.getElementById('result').innerText = '';
         loadLevel();
       } else {
-        // Congratulate when all levels are completed.
-        document.getElementById('result').style.color = 'green';
-        document.getElementById('result').innerText = '🎉 Du har gennemført alle levels! 🎉';
+        showAllLevelsComplete();
       }
     }
-
+    
+    function showAllLevelsComplete(){
+      triggerConfetti();
+      document.getElementById('allLevelsOverlay').style.display = 'flex';
+    }
+    
+    function closeAllLevelsOverlay(){
+      document.getElementById('allLevelsOverlay').style.display = 'none';
+      const r = document.getElementById('result');
+      r.style.color = 'green';
+      r.innerText = '🎉 Du har gennemført alle levels! 🎉';
+    }
+    
     function triggerConfetti(){
-      if (typeof confetti === 'function') {
+      if (typeof confetti === 'function'){
         confetti({
           particleCount: 100,
           spread: 70,
@@ -624,15 +794,15 @@
         });
       }
     }
-
+    
     function updateProgressBar(cur, t){
       const fill = document.getElementById('progressFill');
       if (!fill) return;
-      const f = Math.round((cur / t) * 100);
-      fill.style.width = f + '%';
+      const pct = Math.round((cur / t) * 100);
+      fill.style.width = pct + '%';
       fill.innerText = `Level ${cur} af ${t}`;
     }
-
+    
     function spawnRollingBalls(){
       const container = document.getElementById('rollingBallsContainer');
       if (!container) return;
@@ -644,22 +814,28 @@
         const saturation = Math.floor(Math.random() * 40 + 60);
         const lightness = Math.floor(Math.random() * 40 + 40);
         ball.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-        const size = Math.random() * 100 + 50;
+        const size = Math.random() * 60 + 40;
         ball.style.width = size + 'px';
         ball.style.height = size + 'px';
+        
         const startX = Math.random() * 100 - 50;
         const startY = Math.random() * 100 - 50;
-        ball.style.top = `${startY}vh`;
+        ball.style.top  = `${startY}vh`;
         ball.style.left = `${startX}vw`;
+        
         const driftName = `ballDrift${i}`;
         const endX = Math.random() * 100 - 50;
         const endY = Math.random() * 100 - 50;
         const duration = Math.random() * 20 + 10;
+        
         const styleSheet = document.styleSheets[0];
-        styleSheet.insertRule(`@keyframes ${driftName} {
-          0%   { transform: translate(0,0); }
-          100% { transform: translate(${endX}vw, ${endY}vh); }
-        }`, styleSheet.cssRules.length);
+        styleSheet.insertRule(`
+          @keyframes ${driftName} {
+            0%   { transform: translate(0,0); }
+            100% { transform: translate(${endX}vw, ${endY}vh); }
+          }
+        `, styleSheet.cssRules.length);
+        
         ball.style.animation = `${driftName} ${duration}s ease-in-out infinite alternate`;
         container.appendChild(ball);
       }
