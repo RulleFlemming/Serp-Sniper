@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SERP Sniper - SEO Optimeringsspil</title>
-  
+
   <!-- Confetti til Level Complete -->
   <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
-  
+
   <style>
     /* Grundlæggende nulstilling og layout */
     html, body {
@@ -26,7 +26,7 @@
       text-align: center;
       position: relative;
     }
-    
+
     /* Baggrundskugler */
     .rolling-balls {
       position: fixed;
@@ -45,8 +45,8 @@
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
     }
-    
-    /* Spilcontainer – samme for både desktop og mobil */
+
+    /* Spilcontainer */
     .game-container {
       position: relative;
       z-index: 1;
@@ -58,14 +58,14 @@
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
-    
-    /* Startskærm – dækker hele containeren */
+
+    /* Startskærm */
     .start-screen {
       position: absolute;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgb(0, 0, 0);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -99,11 +99,11 @@
     .start-screen button:hover {
       transform: scale(1.05);
     }
-    
+
     /* Progressbar */
     .progress-bar {
       width: 100%;
-      height: 30px;
+      height: 30px; /* Standardhøjde på desktop */
       background: #e9ecef;
       border-radius: 13px;
       overflow: hidden;
@@ -112,18 +112,21 @@
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
     }
     .progress-fill {
-      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-      height: 100%;
-      line-height: 30px;
-      color: #fff;
+      /* Lad flex styre vertikal centrering frem for line-height */
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      transition: width 0.4s ease;
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+      height: 100%;
+      /* Sæt line-height til "normal" og tilpas fontstørrelse */
+      line-height: normal;
       font-size: 0.9rem;
+      color: #fff;
+      font-weight: bold;
+      white-space: nowrap;   /* Undgå at teksten brydes */
+      transition: width 0.4s ease;
     }
-    
+
     /* Overskrift og Business Case */
     h1 {
       margin: 0.5rem 0;
@@ -134,8 +137,8 @@
       font-size: 0.95rem;
       margin-top: 0.5rem;
     }
-    
-    /* --- Desktopvisning: Brug originalt gridlayout --- */
+
+    /* Desktop-grid */
     #optionsGrid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -143,7 +146,6 @@
       margin-top: 20px;
       text-align: center;
     }
-    /* Headings for desktop */
     #optionsGrid .grid-heading {
       background: #fcfcfc;
       border: 1px solid #ddd;
@@ -152,7 +154,6 @@
       padding: 12px;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
-    /* Svarmuligheder for desktop */
     #optionsGrid .option {
       display: flex;
       align-items: center;
@@ -179,13 +180,12 @@
       color: #fff !important;
       font-weight: bold;
     }
-    
-    /* --- Mobilvisning: Skjul desktop-grid og brug mobilcontainer --- */
+
+    /* Mobilversion skjuler #optionsGrid og viser #mobileOptionsContainer */
     #mobileOptionsContainer {
       display: none;
       margin-top: 20px;
     }
-    
     @media (max-width: 600px) {
       #optionsGrid {
         display: none;
@@ -193,8 +193,16 @@
       #mobileOptionsContainer {
         display: block;
       }
-      
-      /* For hver kategori vises overskrift og svarmuligheder i én boks */
+
+      /* Øg progress-bar for at forhindre tekst-klip på mobil */
+      .progress-bar {
+        height: 40px;
+      }
+      .progress-fill {
+        font-size: 0.85rem;    /* Lidt mindre tekst */
+        padding: 0 8px;        /* Lidt horisontal luft */
+      }
+
       .category-section {
         position: relative;
         text-align: left;
@@ -211,7 +219,7 @@
         color: #333;
         background: transparent;
         border: none;
-        pointer-events: none; /* Sørg for, at overskriften ikke blokerer for klik på svarmulighederne */
+        pointer-events: none;
       }
       .category-section .option {
         background: #f0f0f0;
@@ -237,8 +245,8 @@
         font-weight: bold;
       }
     }
-    
-    /* Knap og resultat (samme for begge visninger) */
+
+    /* Knap & resultat */
     #checkRankBtn {
       display: block;
       margin: 1.5rem auto 0 auto;
@@ -262,8 +270,8 @@
       font-weight: 600;
       font-size: 1rem;
     }
-    
-    /* Overlays */
+
+    /* Overlay: Level Complete */
     .overlay {
       position: absolute;
       top: 0; left: 0;
@@ -341,7 +349,7 @@
     .all-levels-content button:hover {
       background: #0056b3;
     }
-    
+
     /* Kontaktknapper */
     #contactButtons {
       display: flex;
@@ -380,7 +388,12 @@
       display: inline-block;
       vertical-align: middle;
     }
-    
+    #kontakt-tekst {
+      font-size: 1.1rem;
+      color: #000000;
+      margin-bottom: 5px;
+    }
+
     /* Rysteeffekt */
     .shake {
       animation: shake 0.5s;
@@ -413,7 +426,10 @@
     
     <!-- Progressbar -->
     <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%;">Level 1 af 10</div>
+      <!-- Bemærk at line-height er fjernet i .progress-fill -> centrering via flex -->
+      <div class="progress-fill" id="progressFill" style="width: 0%;">
+        Level 1 af 10
+      </div>
     </div>
     
     <h1>SERP Sniper: Optimer for at nå #1</h1>
@@ -421,7 +437,6 @@
     
     <!-- Desktop-grid: vises på store skærme -->
     <div id="optionsGrid">
-      <!-- De 3 statiske heading-celler -->
       <div class="grid-heading">Meta titel</div>
       <div class="grid-heading">Meta beskrivelse</div>
       <div class="grid-heading">H1 Overskrift</div>
@@ -455,33 +470,109 @@
       <button id="allLevelsCloseBtn">Luk</button>
     </div>
   </div>
-  
+  <div id="kontakt-tekst">
+    <br>
+    <p>Feedback eller kontakt på følgende:</p>
+    <br>
+  </div>
   <!-- Kontaktknapper -->
   <div id="contactButtons">
     <a href="https://www.linkedin.com/in/andreas-noah-m%C3%B8lle-jensen/" target="_blank">
       <button>
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837 0 1.357-.554 1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82 0-1.357.537-1.357 1.248 0 .694.52 1.248 1.326 1.248h.015zm4.908 8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876 1.245-.876.877 0 1.228.66 1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357 0-1.96.75-2.29 1.285v.03h.015a6.22 6.22 0 0 1 .015-.03V6.169h-2.4z"/>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+             fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 
+                   1.146C0 .513.526 0 
+                   1.175 0h13.65C15.474 0 16 
+                   .513 16 
+                   1.146v13.708c0 
+                   .633-.526 1.146-1.175 
+                   1.146H1.175C.526 16 0 
+                   15.487 0 
+                   14.854V1.146zm4.943 
+                   12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837 
+                   0 
+                   1.357-.554 
+                   1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82 
+                   0-1.357.537-1.357 
+                   1.248 0 .694.52 
+                   1.248 1.326 1.248h.015zm4.908 
+                   8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876 
+                   1.245-.876.877 
+                   0 
+                   1.228.66 
+                   1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357 
+                   0-1.96.75-2.29 
+                   1.285v.03h.015a6.22 6.22 
+                   0 
+                   0 
+                   1 
+                   .015-.03V6.169h-2.4z"/>
         </svg>
         LinkedIn
       </button>
     </a>
     <a href="mailto:anj@lazzaweb.dk">
       <button class="email">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.708 2.827L15 11.105V5.383zm-.034 6.042l-5.16-3.105L8 9.583l-1.807-.783-5.16 3.105A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.575zM1 5.383v5.722l4.708-2.895L1 5.383z"/>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+             fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 
+                   4a2 2 0 
+                   0 
+                   1 2-2h12a2 
+                   2 0 
+                   0 
+                   1 2 
+                   2v8a2 
+                   2 
+                   0 
+                   0 
+                   1-2 
+                   2H2a2 
+                   2 
+                   0 
+                   0 
+                   1-2-2V4zm2-1a1 
+                   1 
+                   0 
+                   0 
+                   0-1 
+                   1v.217l7 
+                   4.2 
+                   7-4.2V4a1 
+                   1 
+                   0 
+                   0 
+                   0-1-1H2zm13 
+                   2.383-4.708 
+                   2.827L15 
+                   11.105V5.383zm-.034 
+                   6.042-5.16-3.105L8 
+                   9.583l-1.807-.783-5.16 
+                   3.105A1 
+                   1 
+                   0 
+                   0 
+                   0 2 
+                   13h12a1 
+                   1 
+                   0 
+                   0 
+                   0 .966-.575zM1 
+                   5.383v5.722l4.708-2.895L1 
+                   5.383z"/>
         </svg>
         Email
       </button>
     </a>
   </div>
-  
+
   <script>
     let streak = 0;
     let level = 1;
     let levelCompleted = false;
-    
-    // Shuffle-algoritme: Fisher-Yates
+
+    // Shuffle
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -489,7 +580,7 @@
       }
       return array;
     }
-    
+
     // Forretningscases
     const businessCases = {
       1: "Du ejer en café i Aarhus og ønsker at tiltrække flere lokale kunder.",
@@ -503,7 +594,7 @@
       9: "Du ejer en tandlægeklinik i Vejle og ønsker at øge patienttilstrømningen.",
       10: "Du administrerer et rejsebureau i Roskilde og vil øge din digitale tilstedeværelse."
     };
-    
+
     // Svarmuligheder
     const answerOptions = {
       1: {
@@ -557,7 +648,7 @@
         h1:    ["1", "Planlæg din drømmerejse", "Opdag verden med os"]
       }
     };
-    
+
     // Korrekte svar (index)
     const correctAnswers = {
       1:  { title: 0, meta: 0, h1: 0 },
@@ -571,10 +662,10 @@
       9:  { title: 0, meta: 0, h1: 0 },
       10: { title: 0, meta: 0, h1: 0 }
     };
-    
+
     const maxLevel = 10;
     let currentShuffledOptions = {};
-    
+
     document.addEventListener('DOMContentLoaded', () => {
       initGame();
       spawnRollingBalls();
@@ -585,33 +676,33 @@
         document.getElementById('allLevelsCloseBtn').onclick = closeAllLevelsOverlay;
       }
     });
-    
+
     function initGame(){
       document.getElementById('startScreen').style.display = 'flex';
     }
-    
+
     function startGame(){
       document.getElementById('startScreen').style.display = 'none';
       loadLevel();
     }
-    
+
     function loadLevel(){
       levelCompleted = false;
       updateProgressBar(level, maxLevel);
       document.getElementById('businessCase').innerText = businessCases[level];
       document.getElementById('checkRankBtn').disabled = false;
-      
-      // Hvis mobil (skærmbredde ≤600px), byg mobilversionen; ellers desktopversionen.
+
+      // Tjek skærmbredde → mobilversion eller desktop
       if (window.innerWidth <= 600) {
         const container = document.getElementById('mobileOptionsContainer');
         container.innerHTML = "";
-        
+
         const categories = [
           { key: 'title', label: 'Meta titel' },
           { key: 'meta',  label: 'Meta beskrivelse' },
           { key: 'h1',    label: 'H1 Overskrift' }
         ];
-        
+
         categories.forEach(cat => {
           let arr = answerOptions[level][cat.key].map((text, index) => {
             return {
@@ -621,34 +712,34 @@
           });
           arr = shuffle(arr);
           currentShuffledOptions[cat.key] = arr;
-          
+
           const sectionDiv = document.createElement('div');
           sectionDiv.classList.add('category-section');
-          
+
           const h3 = document.createElement('h3');
           h3.innerText = cat.label;
           sectionDiv.appendChild(h3);
-          
+
           arr.forEach(item => {
             const optDiv = document.createElement('div');
             optDiv.classList.add('option');
             optDiv.dataset.category = cat.key;
             optDiv.dataset.correct = item.isCorrect ? "true" : "false";
             optDiv.innerText = item.text;
-            
+
             optDiv.onclick = () => {
               document.querySelectorAll(`.option[data-category='${cat.key}']`)
                 .forEach(o => o.classList.remove('selected'));
               optDiv.classList.add('selected');
             };
-            
+
             sectionDiv.appendChild(optDiv);
           });
-          
+
           container.appendChild(sectionDiv);
         });
       } else {
-        // Desktopversion: brug det oprindelige grid (#optionsGrid)
+        // Desktopversion: brug #optionsGrid
         const grid = document.getElementById('optionsGrid');
         while (grid.children.length > 3) {
           grid.removeChild(grid.lastChild);
@@ -673,18 +764,18 @@
           grid.appendChild(h1Cell);
         }
       }
-      
+
       document.getElementById('result').innerText = "";
       document.getElementById('result').style.color = "";
     }
-    
+
     function createOptionCell(category, obj){
       const cell = document.createElement('div');
       cell.classList.add('option');
       cell.dataset.category = category;
       cell.dataset.correct  = obj.isCorrect ? "true" : "false";
       cell.innerText        = obj.text;
-      
+
       cell.onclick = () => {
         document.querySelectorAll(`.option[data-category='${category}']`)
           .forEach(o => o.classList.remove('selected'));
@@ -692,24 +783,24 @@
       };
       return cell;
     }
-    
+
     function calculateRank(){
       if (levelCompleted) return;
-      
+
       const titleSel = document.querySelector(".option[data-category='title'].selected");
       const metaSel  = document.querySelector(".option[data-category='meta'].selected");
       const h1Sel    = document.querySelector(".option[data-category='h1'].selected");
-      
+
       if (!titleSel || !metaSel || !h1Sel){
         showMessage("Vælg en mulighed i alle kategorier!", true);
         return;
       }
-      
+
       let correctCount = 0;
       if (titleSel.dataset.correct === "true") correctCount++;
       if (metaSel.dataset.correct  === "true") correctCount++;
       if (h1Sel.dataset.correct    === "true") correctCount++;
-      
+
       if (correctCount === 3) {
         levelCompleted = true;
         document.getElementById('checkRankBtn').disabled = true;
@@ -729,13 +820,13 @@
         showMessage("Ikke helt korrekt – prøv at justere dine valg.", true);
       }
     }
-    
+
     function showMessage(msg, isError){
       const r = document.getElementById('result');
       r.innerText = msg;
       r.style.color = isError ? 'red' : 'green';
     }
-    
+
     function showLevelComplete(){
       document.querySelectorAll('.option').forEach(opt => {
         if (opt.dataset.correct === "true") {
@@ -758,11 +849,11 @@
       document.getElementById('overlayMsg').innerHTML = "Godt klaret!<br/>" + facts[i];
       document.getElementById('levelCompleteOverlay').style.display = 'flex';
     }
-    
+
     function hideLevelComplete(){
       document.getElementById('levelCompleteOverlay').style.display = 'none';
     }
-    
+
     function nextLevel(){
       hideLevelComplete();
       if (level < maxLevel) {
@@ -772,19 +863,19 @@
         showAllLevelsComplete();
       }
     }
-    
+
     function showAllLevelsComplete(){
       triggerConfetti();
       document.getElementById('allLevelsOverlay').style.display = 'flex';
     }
-    
+
     function closeAllLevelsOverlay(){
       document.getElementById('allLevelsOverlay').style.display = 'none';
       const r = document.getElementById('result');
       r.style.color = 'green';
       r.innerText = '🎉 Du har gennemført alle levels! 🎉';
     }
-    
+
     function triggerConfetti(){
       if (typeof confetti === 'function'){
         confetti({
@@ -794,7 +885,7 @@
         });
       }
     }
-    
+
     function updateProgressBar(cur, t){
       const fill = document.getElementById('progressFill');
       if (!fill) return;
@@ -802,7 +893,7 @@
       fill.style.width = pct + '%';
       fill.innerText = `Level ${cur} af ${t}`;
     }
-    
+
     function spawnRollingBalls(){
       const container = document.getElementById('rollingBallsContainer');
       if (!container) return;
@@ -817,17 +908,17 @@
         const size = Math.random() * 60 + 40;
         ball.style.width = size + 'px';
         ball.style.height = size + 'px';
-        
+
         const startX = Math.random() * 100 - 50;
         const startY = Math.random() * 100 - 50;
         ball.style.top  = `${startY}vh`;
         ball.style.left = `${startX}vw`;
-        
+
         const driftName = `ballDrift${i}`;
         const endX = Math.random() * 100 - 50;
         const endY = Math.random() * 100 - 50;
         const duration = Math.random() * 20 + 10;
-        
+
         const styleSheet = document.styleSheets[0];
         styleSheet.insertRule(`
           @keyframes ${driftName} {
@@ -835,7 +926,7 @@
             100% { transform: translate(${endX}vw, ${endY}vh); }
           }
         `, styleSheet.cssRules.length);
-        
+
         ball.style.animation = `${driftName} ${duration}s ease-in-out infinite alternate`;
         container.appendChild(ball);
       }
