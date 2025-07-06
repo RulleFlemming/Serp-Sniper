@@ -360,11 +360,8 @@
     }
     #contactButtons a {
       text-decoration: none;
-    }
-    #contactButtons button {
       background: #0073b1;
       color: #fff;
-      border: none;
       padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
@@ -375,13 +372,13 @@
       gap: 8px;
       font-size: 0.9rem;
     }
-    #contactButtons button:hover {
+    #contactButtons a:hover {
       background: #005582;
     }
-    #contactButtons button.email {
+    #contactButtons a.email {
       background: #D44638;
     }
-    #contactButtons button.email:hover {
+    #contactButtons a.email:hover {
       background: #A83224;
     }
     .icon {
@@ -478,92 +475,88 @@
   <!-- Kontaktknapper -->
   <div id="contactButtons">
     <a href="https://www.linkedin.com/in/andreas-noah-m%C3%B8lle-jensen/" target="_blank">
-      <button>
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-             fill="currentColor" viewBox="0 0 16 16">
-          <path d="M0 
-                   1.146C0 .513.526 0 
-                   1.175 0h13.65C15.474 0 16 
-                   .513 16 
-                   1.146v13.708c0 
-                   .633-.526 1.146-1.175 
-                   1.146H1.175C.526 16 0 
-                   15.487 0 
-                   14.854V1.146zm4.943 
-                   12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837 
-                   0 
-                   1.357-.554 
-                   1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82 
-                   0-1.357.537-1.357 
-                   1.248 0 .694.52 
-                   1.248 1.326 1.248h.015zm4.908 
-                   8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876 
-                   1.245-.876.877 
-                   0 
-                   1.228.66 
-                   1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357 
-                   0-1.96.75-2.29 
-                   1.285v.03h.015a6.22 6.22 
-                   0 
-                   0 
-                   1 
-                   .015-.03V6.169h-2.4z"/>
-        </svg>
-        LinkedIn
-      </button>
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           fill="currentColor" viewBox="0 0 16 16">
+        <path d="M0
+                 1.146C0 .513.526 0
+                 1.175 0h13.65C15.474 0 16
+                 .513 16
+                 1.146v13.708c0
+                 .633-.526 1.146-1.175
+                 1.146H1.175C.526 16 0
+                 15.487 0
+                 14.854V1.146zm4.943
+                 12.248V6.169H2.542v7.225h2.401zm-1.2-8.21c.837
+                 0
+                 1.357-.554
+                 1.357-1.248-.015-.71-.52-1.248-1.341-1.248-.82
+                 0-1.357.537-1.357
+                 1.248 0 .694.52
+                 1.248 1.326 1.248h.015zm4.908
+                 8.21V9.359c0-.215.015-.43.08-.586.175-.43.575-.876
+                 1.245-.876.877
+                 0
+                 1.228.66
+                 1.228 1.628v4.857h2.4V9.25c0-2.367-1.26-3.471-2.945-3.471-1.357
+                 0-1.96.75-2.29
+                 1.285v.03h.015a6.22 6.22
+                 0
+                 0
+                 1
+                 .015-.03V6.169h-2.4z"/>
+      </svg>
+      LinkedIn
     </a>
-    <a href="mailto:anj@lazzaweb.dk">
-      <button class="email">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-             fill="currentColor" viewBox="0 0 16 16">
-          <path d="M0 
-                   4a2 2 0 
-                   0 
-                   1 2-2h12a2 
-                   2 0 
-                   0 
-                   1 2 
-                   2v8a2 
-                   2 
-                   0 
-                   0 
-                   1-2 
-                   2H2a2 
-                   2 
-                   0 
-                   0 
-                   1-2-2V4zm2-1a1 
-                   1 
-                   0 
-                   0 
-                   0-1 
-                   1v.217l7 
-                   4.2 
-                   7-4.2V4a1 
-                   1 
-                   0 
-                   0 
-                   0-1-1H2zm13 
-                   2.383-4.708 
-                   2.827L15 
-                   11.105V5.383zm-.034 
-                   6.042-5.16-3.105L8 
-                   9.583l-1.807-.783-5.16 
-                   3.105A1 
-                   1 
-                   0 
-                   0 
-                   0 2 
-                   13h12a1 
-                   1 
-                   0 
-                   0 
-                   0 .966-.575zM1 
-                   5.383v5.722l4.708-2.895L1 
-                   5.383z"/>
-        </svg>
-        Email
-      </button>
+    <a class="email" href="mailto:anj@lazzaweb.dk">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           fill="currentColor" viewBox="0 0 16 16">
+        <path d="M0
+                 4a2 2 0
+                 0
+                 1 2-2h12a2
+                 2 0
+                 0
+                 1 2
+                 2v8a2
+                 2
+                 0
+                 0
+                 1-2
+                 2H2a2
+                 2
+                 0
+                 0
+                 1-2-2V4zm2-1a1
+                 1
+                 0
+                 0
+                 0-1
+                 1v.217l7
+                 4.2
+                 7-4.2V4a1
+                 1
+                 0
+                 0
+                 0-1-1H2zm13
+                 2.383-4.708
+                 2.827L15
+                 11.105V5.383zm-.034
+                 6.042-5.16-3.105L8
+                 9.583l-1.807-.783-5.16
+                 3.105A1
+                 1
+                 0
+                 0
+                 0 2
+                 13h12a1
+                 1
+                 0
+                 0
+                 0 .966-.575zM1
+                 5.383v5.722l4.708-2.895L1
+                 5.383z"/>
+      </svg>
+      Email
     </a>
   </div>
 
